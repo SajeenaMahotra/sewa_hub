@@ -1,66 +1,124 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/widget/onboardingpage.dart';
+import 'package:provider/provider.dart';
+import 'package:sewa_hub/viewmodels/onboarding_viewmodel.dart';
+import 'package:sewa_hub/widget/button1.dart';
+import 'package:sewa_hub/widget/button2.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
-  PageController _controller = PageController();
-  int _currentPage = 0;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView(
-              controller: _controller,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              children: [
-                onboardingPage(
-                  topSpace: 100,
-                  imagePath: 'assets/images/onboarding1.png',
-                ),
-                onboardingPage(
-                  topSpace: 160,
-                  imagePath: 'assets/images/onboarding2.png',
-                ),
-              ],
+    return ChangeNotifierProvider(
+      create: (_) => OnboardingViewmodel(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            // Scrollable content
+            Expanded(
+              child: Consumer<OnboardingViewmodel>(
+                builder: (context, viewModel, _) {
+                  return PageView(
+                    controller: viewModel.controller,
+                    onPageChanged: (index) {
+                      viewModel.setCurrentPage(index);
+                    },
+                    children: [
+                      _buildPage(
+                        imagePath: 'assets/images/onboarding1.png',
+                        topSpace: 120,
+                        title1: 'Your Home,Our',
+                        title2: 'Services.',
+                        subtitle: 'Discover a comprehensive range of services tailored for you.',
+                      ),
+                      _buildPage(
+                        imagePath: 'assets/images/onboarding2.png',
+                        topSpace: 120,
+                        title1: 'Book Smarter,',
+                        title2: 'Live Easier.',
+                        subtitle: 'Schedule your services in just a few taps.',
+                      ),
+                      _buildPage(
+                        imagePath: 'assets/images/onboarding3.png',
+                        topSpace: 120,
+                        title1: 'Trust in Every',
+                        title2: 'Service.',
+                        subtitle: 'Reliable support from verified experts — simple, secure, hassle-free.',
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
+            // Fixed dots and buttons
+            Consumer<OnboardingViewmodel>(
+              builder: (context, viewModel, _) {
+                return Column(
+                  children: [
+                    // Dots
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        3,
+                        (index) => Container(
+                          margin: const EdgeInsets.all(4),
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: viewModel.currentPage == index
+                                ? const Color(0xFFFF7940)
+                                : Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Button2(text: "Get Started")         
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPage({
+    required String imagePath,
+    required double topSpace,
+    required String title1,
+    required String title2,
+    required String subtitle,
+  }) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(height: topSpace),
+          Image.asset(imagePath, fit: BoxFit.contain),
+          const SizedBox(height: 10),
+          Text(
+            title1,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.all(4),
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: _currentPage == 0 ? Color(0xFFFF7940) : Colors.grey,
-                  shape: BoxShape.circle,
-                ),
+          Text(
+            title2,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 20,
+                color: Color.fromARGB(255, 103, 103, 103),
               ),
-              Container(
-                margin: EdgeInsets.all(4),
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: _currentPage == 1 ? Color(0xFFFF7940) : Colors.grey,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),

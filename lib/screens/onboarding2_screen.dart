@@ -10,8 +10,7 @@ class Onboarding2Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
+      body:Column(
           children: [
             SizedBox(height: 160,),
             Image.asset('assets/images/onboarding2.png',fit:BoxFit.contain),
@@ -39,7 +38,6 @@ class Onboarding2Screen extends StatelessWidget {
             Button2(text: "Sign Up"),
             Button1(text: "Login",)
           ],
-        ),
       ),
     );
   }

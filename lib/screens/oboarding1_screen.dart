@@ -10,8 +10,7 @@ class Oboarding1Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
+      body:Column(
           children: [
             SizedBox(height: 120,),
             Image.asset('assets/images/onboarding1.png',fit:BoxFit.contain),
@@ -40,7 +39,6 @@ class Oboarding1Screen extends StatelessWidget {
             // Button1(text: "Login",)
           ],
         ),
-      ),
     );
   }
 }
