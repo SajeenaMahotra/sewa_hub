@@ -22,11 +22,15 @@ class Button2 extends StatelessWidget {
                 horizontal: 20,
                 vertical: 10,
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              )
           ),onPressed: onPressed, child: 
         Text(text,
         style: TextStyle(
               color: Colors.white,
-              fontSize: 25
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
             ),
         )),
       ),
