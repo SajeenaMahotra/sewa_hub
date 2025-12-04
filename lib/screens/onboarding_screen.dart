@@ -76,10 +76,9 @@ class OnboardingScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Button2(text: "Get Started", onPressed: () {
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen(),),);
-                    },)         
+                    Button2(text: "Get Started", onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+                    })                          
                   ],
                 );
               },
