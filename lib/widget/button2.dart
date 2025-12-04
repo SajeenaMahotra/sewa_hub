@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Button2 extends StatelessWidget {
-  const Button2({super.key, required this.text});
+  const Button2({super.key,
+  required this.text,
+  required this.onPressed});
 
   final String text;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class Button2 extends StatelessWidget {
                 horizontal: 20,
                 vertical: 10,
               ),
-          ),onPressed: () { }, child: 
+          ),onPressed: onPressed, child: 
         Text(text,
         style: TextStyle(
               color: Colors.white,
