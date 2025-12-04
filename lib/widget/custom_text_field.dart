@@ -25,10 +25,9 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   late bool _obscureText;
   @override
-
-  void initState(){
+  void initState() {
     super.initState();
-    _obscureText=widget.obscureText;
+    _obscureText = widget.obscureText;
   }
 
   Widget build(BuildContext context) {
@@ -39,14 +38,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
       decoration: InputDecoration(
         labelText: widget.labelText,
         hintText: widget.hintText,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.black),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Color(0xFFFF7940)),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        // enabledBorder: OutlineInputBorder(
+        //   borderRadius: BorderRadius.circular(15),
+        //   borderSide: BorderSide(color: Colors.black),
+        // ),
+        // errorBorder: OutlineInputBorder(
+        //   borderRadius: BorderRadius.circular(15),
+        //   borderSide: const BorderSide(color: Colors.red),
+        // ),
         suffixIcon: widget.obscureText
             ? IconButton(
                 icon: Icon(

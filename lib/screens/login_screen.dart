@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:sewa_hub/commons/snackbar.dart';
+import 'package:sewa_hub/screens/dashboard_screen.dart';
 import 'package:sewa_hub/widget/button2.dart';
 import 'package:sewa_hub/widget/custom_text_field.dart';
 
@@ -16,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController= TextEditingController();
+  bool _isForgotPasswordHovered = false;
   
   @override
   void dispose(){
@@ -35,14 +37,18 @@ class _LoginScreenState extends State<LoginScreen> {
       // Clear fields after successful login
       _emailController.clear();
       _passwordController.clear();
-    } else {
-      // Login failed
-      showSnackbar(
-        context: context,
-        message: "Please fix the errors",
-        color: Colors.red,
-      );
-    }
+    // Navigate to Dashboard after 1 second delay
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DashboardScreen(),
+            ),
+          );
+        }
+      });
+    } 
   }
 
   Widget build(BuildContext context) {
@@ -104,8 +110,45 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 ),
               ),
+              const SizedBox(height: 2),
+                  // Forgot Password Link
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) {
+                          setState(() {
+                            _isForgotPasswordHovered = true;
+                          });
+                        },
+                        onExit: (_) {
+                          setState(() {
+                            _isForgotPasswordHovered = false;
+                          });
+                        },
+                        child: GestureDetector(
+                          onTap: () {
+                            // TODO: Add forgot password logic here
+                            },
+                          child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: _isForgotPasswordHovered
+                                  ? const Color(0xFFFF7940)
+                                  : Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
               SizedBox(height: 20,),
-              Button2(text: "Login", onPressed: () {},),
+              Button2(text: "Login", onPressed:_validateAndLogin,),
               ],
         ),
       ),
