@@ -46,9 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
         if (mounted) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const LoginScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
           );
         }
       });
@@ -69,13 +67,9 @@ class _SignupScreenState extends State<SignupScreen> {
       body: Center(
         child: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 500,
-            ),
+            constraints: BoxConstraints(maxWidth: 500),
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 500,
-              ),
+              constraints: BoxConstraints(maxWidth: 500),
               child: Column(
                 children: [
                   const SizedBox(height: 100),
@@ -133,7 +127,9 @@ class _SignupScreenState extends State<SignupScreen> {
                               if (value == null || value.isEmpty) {
                                 return "Email is required";
                               }
-                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              if (!RegExp(
+                                r'^[^@]+@[^@]+\.[^@]+',
+                              ).hasMatch(value)) {
                                 return "Please enter a valid email";
                               }
                               return null;

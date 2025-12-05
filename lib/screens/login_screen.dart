@@ -41,9 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const DashboardScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
           );
         }
       });
@@ -64,17 +62,18 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 500,
-            ),
+            constraints: BoxConstraints(maxWidth: 500),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 150),
+                const SizedBox(height: 50),
                 SizedBox(
                   height: 60,
                   width: 300,
-                  child: Image.asset('assets/images/sewahub_logo.png', fit: BoxFit.contain),
+                  child: Image.asset(
+                    'assets/images/sewahub_logo.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 const Text(
@@ -104,7 +103,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value == null || value.isEmpty) {
                               return "Email is required";
                             }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            if (!RegExp(
+                              r'^[^@]+@[^@]+\.[^@]+',
+                            ).hasMatch(value)) {
                               return "Please enter a valid email";
                             }
                             return null;
@@ -163,10 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 25),
                         // Login Button
-                        Button2(
-                          text: "Login",
-                          onPressed: _validateAndLogin,
-                        ),
+                        Button2(text: "Login", onPressed: _validateAndLogin),
                         const SizedBox(height: 20),
                         // Don't have account link
                         Row(

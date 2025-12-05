@@ -17,9 +17,7 @@ class OnboardingScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 500,
-            ),
+            constraints: BoxConstraints(maxWidth: 500),
             child: Column(
               children: [
                 // Scrollable content
@@ -37,21 +35,24 @@ class OnboardingScreen extends StatelessWidget {
                             topSpace: 120,
                             title1: 'Your Home,Our',
                             title2: 'Services.',
-                            subtitle: 'Discover a comprehensive range of services tailored for you.',
+                            subtitle:
+                                'Discover a comprehensive range of services tailored for you.',
                           ),
                           _buildPage(
                             imagePath: 'assets/images/onboarding2.png',
                             topSpace: 120,
                             title1: 'Book Smarter,',
                             title2: 'Live Easier.',
-                            subtitle: 'Schedule your services in just a few taps.',
+                            subtitle:
+                                'Schedule your services in just a few taps.',
                           ),
                           _buildPage(
                             imagePath: 'assets/images/onboarding3.png',
                             topSpace: 120,
                             title1: 'Trust in Every',
                             title2: 'Service.',
-                            subtitle: 'Reliable support from verified experts — simple, secure, hassle-free.',
+                            subtitle:
+                                'Reliable support from verified experts — simple, secure, hassle-free.',
                           ),
                         ],
                       );
@@ -82,9 +83,17 @@ class OnboardingScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Button2(text: "Get Started", onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
-                        })                          
+                        Button2(
+                          text: "Get Started",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     );
                   },
