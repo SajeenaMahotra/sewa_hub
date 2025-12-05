@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sewa_hub/commons/snackbar.dart';
 import 'package:sewa_hub/screens/dashboard_screen.dart';
 import 'package:sewa_hub/screens/signup_screen.dart';
+import 'package:sewa_hub/widget/button1.dart';
 import 'package:sewa_hub/widget/button2.dart';
 import 'package:sewa_hub/widget/custom_text_field.dart';
 
@@ -175,6 +176,34 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Button2(text: "Login", onPressed: _validateAndLogin),
                         ),
                         const SizedBox(height: 20),
+                        const Text(
+                          "Or continue with",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 120, 120, 120),
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+                        // Google and Apple Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Button1(
+                              logoPath: 'assets/images/google_logo.png',
+                              onPressed: () {
+                                // Add Google login logic
+                              }, logoSize: 60,
+                            ),
+                            const SizedBox(width: 16),
+                            Button1(
+                              logoPath: 'assets/images/apple_logo.png',
+                              onPressed: () {
+                                // Add Apple login logic
+                              }, logoSize: 60,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 30),
                         // Don't have account link
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

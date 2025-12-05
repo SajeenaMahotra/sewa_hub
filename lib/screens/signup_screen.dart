@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sewa_hub/commons/snackbar.dart';
 import 'package:sewa_hub/screens/login_screen.dart';
+import 'package:sewa_hub/widget/button1.dart';
 import 'package:sewa_hub/widget/button2.dart';
 import 'package:sewa_hub/widget/custom_text_field.dart';
 
@@ -34,7 +35,8 @@ class _SignupScreenState extends State<SignupScreen> {
       showSnackbar(
         context: context,
         message: "Your account has been successfully created.",
-        color: Colors.green, title: 'Success !',
+        color: Colors.green,
+        title: 'Success !',
       );
       // Clear fields after successful signup
       _fullnameController.clear();
@@ -54,7 +56,8 @@ class _SignupScreenState extends State<SignupScreen> {
       showSnackbar(
         context: context,
         message: "Please fix the errors",
-        color: Colors.red, title: 'Oops!',
+        color: Colors.red,
+        title: 'Oops!',
       );
     }
   }
@@ -100,7 +103,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           // Full Name Field
                           Padding(
-                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            padding: const EdgeInsets.only(right: 10, left: 10),
                             child: CustomTextField(
                               controller: _fullnameController,
                               labelText: "Full Name",
@@ -121,7 +124,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           const SizedBox(height: 15),
                           // Email Field
                           Padding(
-                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            padding: const EdgeInsets.only(right: 10, left: 10),
                             child: CustomTextField(
                               controller: _emailController,
                               labelText: "Email",
@@ -165,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           const SizedBox(height: 15),
                           // Confirm Password Field
                           Padding(
-                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            padding: const EdgeInsets.only(right: 10, left: 10),
                             child: CustomTextField(
                               controller: _confirmpasswordController,
                               labelText: "Confirm Password",
@@ -186,7 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           const SizedBox(height: 20),
                           // Sign Up Button
                           Padding(
-                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            padding: const EdgeInsets.only(right: 10, left: 10),
                             child: Button2(
                               text: "Sign Up",
                               onPressed: _validateAndSignup,
@@ -220,15 +223,47 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                             ],
+  
+                          ), 
+                          const SizedBox(height: 20),
+                        const Text(
+                          "Or continue with",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 120, 120, 120),
                           ),
-                          const SizedBox(height: 90),
+                        ),
+                        const SizedBox(height: 25),
+                        // Google and Apple Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Button1(
+                              logoPath: 'assets/images/google_logo.png',
+                              onPressed: () {
+                                // Add Google login logic
+                              }, logoSize: 60,
+                            ),
+                            const SizedBox(width: 16),
+                            Button1(
+                              logoPath: 'assets/images/apple_logo.png',
+                              onPressed: () {
+                                // Add Apple login logic
+                              }, logoSize: 60,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 30),
+                    
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0,
+                            ),
                             child: Text(
-                                  "By signing up, you agree to our Terms and Conditions and Privacy Policy.",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 14),
-                                ),
+                              "By signing up, you agree to our Terms and Conditions and Privacy Policy.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 14),
+                            ),
                           ),
                         ],
                       ),
