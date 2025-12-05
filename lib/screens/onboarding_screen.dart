@@ -65,34 +65,40 @@ class OnboardingScreen extends StatelessWidget {
                     return Column(
                       children: [
                         // Dots
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            3,
-                            (index) => Container(
-                              margin: const EdgeInsets.all(4),
-                              width: 10,
-                              height: 10,
-                              decoration: BoxDecoration(
-                                color: viewModel.currentPage == index
-                                    ? const Color(0xFFFF7940)
-                                    : Colors.grey,
-                                shape: BoxShape.circle,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              3,
+                              (index) => Container(
+                                margin: const EdgeInsets.all(4),
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: viewModel.currentPage == index
+                                      ? const Color(0xFFFF7940)
+                                      : Colors.grey,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Button2(
-                          text: "Get Started",
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
-                          },
+                        const SizedBox(height:0),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 30.0,right: 10, left: 10),
+                          child: Button2(
+                            text: "Get Started",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ],
                     );
