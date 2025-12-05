@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sewa_hub/screens/login_screen.dart';
+import 'package:sewa_hub/screens/signup_screen.dart';
 import 'package:sewa_hub/viewmodels/onboarding_viewmodel.dart';
 import 'package:sewa_hub/widget/button1.dart';
 import 'package:sewa_hub/widget/button2.dart';
@@ -94,7 +95,7 @@ class OnboardingScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
+                                  builder: (context) => SignupScreen(),
                                 ),
                               );
                             },

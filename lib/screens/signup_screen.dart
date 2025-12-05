@@ -33,8 +33,8 @@ class _SignupScreenState extends State<SignupScreen> {
       // Signup successful
       showSnackbar(
         context: context,
-        message: "Signup Successful!",
-        color: Colors.green,
+        message: "Your account has been successfully created.",
+        color: Colors.green, title: 'Success !',
       );
       // Clear fields after successful signup
       _fullnameController.clear();
@@ -54,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
       showSnackbar(
         context: context,
         message: "Please fix the errors",
-        color: Colors.red,
+        color: Colors.red, title: 'Oops!',
       );
     }
   }
@@ -99,83 +99,98 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: Column(
                         children: [
                           // Full Name Field
-                          CustomTextField(
-                            controller: _fullnameController,
-                            labelText: "Full Name",
-                            errorText: "Please enter your full name",
-                            hintText: 'John Doe',
-                            obscureText: false,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Full name is required";
-                              }
-                              if (value.length < 3) {
-                                return "Full name must be at least 3 characters";
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            child: CustomTextField(
+                              controller: _fullnameController,
+                              labelText: "Full Name",
+                              errorText: "Please enter your full name",
+                              hintText: 'John Doe',
+                              obscureText: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Full name is required";
+                                }
+                                if (value.length < 3) {
+                                  return "Full name must be at least 3 characters";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                           const SizedBox(height: 15),
                           // Email Field
-                          CustomTextField(
-                            controller: _emailController,
-                            labelText: "Email",
-                            errorText: "Please enter your email address",
-                            hintText: 'johndoe@gmail.com',
-                            obscureText: false,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Email is required";
-                              }
-                              if (!RegExp(
-                                r'^[^@]+@[^@]+\.[^@]+',
-                              ).hasMatch(value)) {
-                                return "Please enter a valid email";
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            child: CustomTextField(
+                              controller: _emailController,
+                              labelText: "Email",
+                              errorText: "Please enter your email address",
+                              hintText: 'johndoe@gmail.com',
+                              obscureText: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Email is required";
+                                }
+                                if (!RegExp(
+                                  r'^[^@]+@[^@]+\.[^@]+',
+                                ).hasMatch(value)) {
+                                  return "Please enter a valid email";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                           const SizedBox(height: 15),
                           // Password Field
-                          CustomTextField(
-                            controller: _passwordController,
-                            labelText: "Password",
-                            errorText: "Please enter your password",
-                            hintText: '********',
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Password is required";
-                              }
-                              if (value.length < 6) {
-                                return "Password must be at least 6 characters";
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10, left: 10),
+                            child: CustomTextField(
+                              controller: _passwordController,
+                              labelText: "Password",
+                              errorText: "Please enter your password",
+                              hintText: '********',
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Password is required";
+                                }
+                                if (value.length < 6) {
+                                  return "Password must be at least 6 characters";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                           const SizedBox(height: 15),
                           // Confirm Password Field
-                          CustomTextField(
-                            controller: _confirmpasswordController,
-                            labelText: "Confirm Password",
-                            errorText: "Passwords do not match",
-                            hintText: '********',
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Confirm password is required";
-                              }
-                              if (value != _passwordController.text) {
-                                return "Passwords do not match";
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            child: CustomTextField(
+                              controller: _confirmpasswordController,
+                              labelText: "Confirm Password",
+                              errorText: "Passwords do not match",
+                              hintText: '********',
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Confirm password is required";
+                                }
+                                if (value != _passwordController.text) {
+                                  return "Passwords do not match";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                          const SizedBox(height: 25),
+                          const SizedBox(height: 20),
                           // Sign Up Button
-                          Button2(
-                            text: "Sign Up",
-                            onPressed: _validateAndSignup,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10,left: 10),
+                            child: Button2(
+                              text: "Sign Up",
+                              onPressed: _validateAndSignup,
+                            ),
                           ),
                           const SizedBox(height: 20),
                           // Already have account link
@@ -206,7 +221,15 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 90),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            child: Text(
+                                  "By signing up, you agree to our Terms and Conditions and Privacy Policy.",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                          ),
                         ],
                       ),
                     ),

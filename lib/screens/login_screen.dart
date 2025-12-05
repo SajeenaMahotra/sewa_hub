@@ -30,8 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
       // Login successful
       showSnackbar(
         context: context,
-        message: "Login Successful!",
-        color: Colors.green,
+        message: "You’re now logged in.",
+        color: Colors.green, title: 'Login Successful!',
       );
       // Clear fields after successful login
       _emailController.clear();
@@ -48,8 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       showSnackbar(
         context: context,
-        message: "Please fix the errors",
-        color: Colors.red,
+        message: "Please check your details and try again.",
+        color: Colors.red, title: 'Oops!',
       );
     }
   }
@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 60,
                   width: 300,
@@ -93,41 +93,47 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         // Email Field
-                        CustomTextField(
-                          controller: _emailController,
-                          labelText: "Email",
-                          errorText: "Please enter your email address",
-                          hintText: 'johndoe@gmail.com',
-                          obscureText: false,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Email is required";
-                            }
-                            if (!RegExp(
-                              r'^[^@]+@[^@]+\.[^@]+',
-                            ).hasMatch(value)) {
-                              return "Please enter a valid email";
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10, left: 10),
+                          child: CustomTextField(
+                            controller: _emailController,
+                            labelText: "Email",
+                            errorText: "Please enter your email address",
+                            hintText: 'johndoe@gmail.com',
+                            obscureText: false,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Email is required";
+                              }
+                              if (!RegExp(
+                                r'^[^@]+@[^@]+\.[^@]+',
+                              ).hasMatch(value)) {
+                                return "Please enter a valid email";
+                              }
+                              return null;
+                            },
+                          ),
                         ),
                         const SizedBox(height: 15),
                         // Password Field
-                        CustomTextField(
-                          controller: _passwordController,
-                          labelText: "Password",
-                          errorText: "Please enter your password",
-                          hintText: '********',
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Password is required";
-                            }
-                            if (value.length < 6) {
-                              return "Password must be at least 6 characters";
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10, left: 10),
+                          child: CustomTextField(
+                            controller: _passwordController,
+                            labelText: "Password",
+                            errorText: "Please enter your password",
+                            hintText: '********',
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Password is required";
+                              }
+                              if (value.length < 6) {
+                                return "Password must be at least 6 characters";
+                              }
+                              return null;
+                            },
+                          ),
                         ),
                         const SizedBox(height: 15),
                         // Forgot Password Link
@@ -147,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             child: GestureDetector(
                               onTap: () {
-                                // TODO: Add forgot password logic here
+                                // Add forgot password logic here
                               },
                               child: Text(
                                 "Forgot Password?",
@@ -162,9 +168,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 20),
                         // Login Button
-                        Button2(text: "Login", onPressed: _validateAndLogin),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10, left: 10),
+                          child: Button2(text: "Login", onPressed: _validateAndLogin),
+                        ),
                         const SizedBox(height: 20),
                         // Don't have account link
                         Row(
