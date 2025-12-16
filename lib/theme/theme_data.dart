@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-ThemeData getApplicationTheme(){
+ThemeData getApplicationTheme() {
   return ThemeData(
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
     fontFamily: 'Inter Regular',
@@ -8,10 +8,18 @@ ThemeData getApplicationTheme(){
       style: ElevatedButton.styleFrom(
         textStyle: const TextStyle(
           color: Colors.white,
-          fontFamily: 'Inter Bold'
+          fontFamily: 'Inter Bold',
         ),
-        
-      )
-    )
+      ),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedIconTheme: const IconThemeData(color: Color(0xFFFF7940)),
+      unselectedIconTheme: const IconThemeData(color: Colors.black),
+
+      selectedItemColor: const Color(0xFFFF7940), // selected label color
+      unselectedItemColor: Colors.black, // unselected label color
+
+      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+    ),
   );
 }
