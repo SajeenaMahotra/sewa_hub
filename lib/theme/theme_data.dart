@@ -15,11 +15,10 @@ ThemeData getApplicationTheme() {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       selectedIconTheme: const IconThemeData(color: Color(0xFFFF7940)),
       unselectedIconTheme: const IconThemeData(color: Colors.black),
-
-      selectedItemColor: const Color(0xFFFF7940), // selected label color
-      unselectedItemColor: Colors.black, // unselected label color
-
+      selectedItemColor: const Color(0xFFFF7940),
+      unselectedItemColor: Colors.black, 
       selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+      elevation: 10.0
     ),
   );
 }
