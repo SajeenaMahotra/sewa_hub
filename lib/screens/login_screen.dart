@@ -210,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const Text(
                               "Don't have an account? ",
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 15),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: const Text(
                                 "Create One",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFFFF7940),
                                 ),

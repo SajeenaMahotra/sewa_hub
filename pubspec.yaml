@@ -76,24 +76,24 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Montserrat Regular
+    - family: Inter Regular
       fonts:
-        - asset: assets/fonts/Montserrat-Regular.ttf
-    - family: Montserrat Bold
+        - asset: assets/fonts/Inter_28pt-Regular.ttf
+    - family: Inter Bold
       fonts:
-        - asset: assets/fonts/Montserrat-Bold.ttf
-    - family: Montserrat Italic
+        - asset: assets/fonts/Inter_28pt-Bold.ttf
+    - family: Inter Italic
       fonts:
-        - asset: assets/fonts/Montserrat-Italic.ttf
-    - family: Montserrat Medium
+        - asset: assets/fonts/Inter_28pt-Italic.ttf
+    - family: Inter Medium
       fonts:
-        - asset: assets/fonts/Montserrat-Medium.ttf
-    - family: Montserrat SemiBold
+        - asset: assets/fonts/Inter_28pt-Medium.ttf
+    - family: Inter SemiBold
       fonts:
-        - asset: assets/fonts/Montserrat-SemiBold.ttf
-    - family: Montserrat Black
+        - asset: assets/fonts/Inter_28pt-SemiBold.ttf
+    - family: Inter Light
       fonts:
-        - asset: assets/fonts/Montserrat-Black.ttf
+        - asset: assets/fonts/Inter_28pt-Light.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

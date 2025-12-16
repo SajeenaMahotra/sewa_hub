@@ -128,11 +128,11 @@ class OnboardingScreen extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             title1,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+            style: const TextStyle( fontFamily: 'Inter Bold', fontSize: 35),
           ),
           Text(
             title2,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+            style: const TextStyle(fontFamily: 'Inter Bold', fontSize: 35),
           ),
           const SizedBox(height: 20),
           Padding(
@@ -141,9 +141,8 @@ class OnboardingScreen extends StatelessWidget {
               subtitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontWeight: FontWeight.normal,
                 fontSize: 20,
-                color: Color.fromARGB(255, 103, 103, 103),
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
           ),

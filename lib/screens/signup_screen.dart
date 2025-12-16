@@ -202,7 +202,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             children: [
                               const Text(
                                 "Already have an account? ",
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(fontSize: 15),
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -262,7 +262,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             child: Text(
                               "By signing up, you agree to our Terms and Conditions and Privacy Policy.",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 15),
                             ),
                           ),
                         ],
