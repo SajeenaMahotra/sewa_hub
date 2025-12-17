@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_hub/widget/category_card_widget.dart';
 import 'package:sewa_hub/widget/home_card_widget.dart';
+import 'package:sewa_hub/widget/service_card_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,10 +22,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20.0),
               child: Text(
                 "What service are you\nlooking for ?",
-                style: const TextStyle(
-                  fontFamily: 'Inter Bold',
-                  fontSize: 30,
-                ),
+                style: const TextStyle(fontFamily: 'Inter Bold', fontSize: 30),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -48,8 +46,7 @@ class HomeScreen extends StatelessWidget {
                       hintText: "Search what you need .......",
                       prefixIcon: const Icon(Icons.search),
                       border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
@@ -57,46 +54,101 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 20),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: const [
-      Text(
-        "Categories",
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    "Categories",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "See all",
+                    style: TextStyle(
+                      color: Color(0xFFFF7940),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            SizedBox(
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 20),
+                children: [
+                  CategoryCardWidget(
+                    title: 'Plumbing',
+                    imagePath: 'assets/icons/plumbing.png',
+                  ),
+                  CategoryCardWidget(
+                    title: 'Electrician',
+                    imagePath: 'assets/icons/electrician.png',
+                  ),
+                  CategoryCardWidget(
+                    title: 'Painter',
+                    imagePath: 'assets/icons/paintroller.png',
+                  ),
+                  CategoryCardWidget(
+                    title: 'Carpenter',
+                    imagePath: 'assets/icons/carpenter.png',
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Popular Services",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            SizedBox(
+              height: 250,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 20),
+                children: const [
+                  ServiceCardWidget(
+                    imagePath: 'assets/images/serviceelectricity.png',
+                    title: 'Electrical grid connection',
+                    provider: 'William James',
+                    price: 600,
+                    rating: 4.0,
+                    ratingCount: 10,
+                  ),
+                  ServiceCardWidget(
+                    imagePath: 'assets/images/serviceplumbing.png',
+                    title: 'Plumbing Fix',
+                    provider: 'John Doe',
+                    price: 500,
+                    rating: 4.5,
+                    ratingCount: 12,
+                  ),
+                  ServiceCardWidget(
+        imagePath: 'assets/images/serviceplumbing.png',
+        title: 'Plumbing Fix',
+        provider: 'John Doe',
+        price: 500,
+        rating: 4.5,
+        ratingCount: 12,
       ),
-      Text(
-        "See all",
-        style: TextStyle(
-          color: Color(0xFFFF7940),
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    ],
-  ),
-),
+                ],
+              ),
+            ),
 
-const SizedBox(height: 12),
-
-SizedBox(
-  height: 150,
-  child: ListView(
-    scrollDirection: Axis.horizontal,
-    padding: const EdgeInsets.only(left: 20),
-    children: [
-      CategoryCardWidget(title: 'Plumbing', imagePath: 'assets/icons/plumbing.png'),
-      CategoryCardWidget(title: 'Electrician', imagePath: 'assets/icons/electrician.png'),
-      CategoryCardWidget(title: 'Painter', imagePath: 'assets/icons/paintroller.png'),
-      CategoryCardWidget(title: 'Carpenter', imagePath: 'assets/icons/carpenter.png'),
-      
-    ],
-  ),
-),
-
+            const SizedBox(height: 20),
           ],
         ),
       ),
