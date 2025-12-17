@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CategoryCardWidget extends StatelessWidget {
-  const CategoryCardWidget({super.key, required this.icon, required this.title});
+  const CategoryCardWidget({super.key, required this.title, required this.imagePath});
 
-  final IconData icon;
+  final String imagePath;
   final String title;
 
   @override
@@ -26,10 +26,11 @@ class CategoryCardWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 36,
-            color: const Color(0xFFFF7940),
+          Image.asset(
+            imagePath,
+            width: 42,
+            height: 42,
+            fit: BoxFit.contain,
           ),
           const SizedBox(height: 10),
           Text(

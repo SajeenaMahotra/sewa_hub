@@ -14,6 +14,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 25),
             const HomeCardWidget(),
             const SizedBox(height: 8),
             Padding(
@@ -86,11 +87,12 @@ SizedBox(
   child: ListView(
     scrollDirection: Axis.horizontal,
     padding: const EdgeInsets.only(left: 20),
-    children: const [
-      CategoryCardWidget(icon: Icons.plumbing, title: "Plumbing"),
-      CategoryCardWidget(icon: Icons.electrical_services, title: "Electrician"),
-      CategoryCardWidget(icon: Icons.format_paint, title: "Painting"),
-      CategoryCardWidget(icon: Icons.build, title: "Carpenter"),
+    children: [
+      CategoryCardWidget(title: 'Plumbing', imagePath: 'assets/icons/plumbing.png'),
+      CategoryCardWidget(title: 'Electrician', imagePath: 'assets/icons/electrician.png'),
+      CategoryCardWidget(title: 'Painter', imagePath: 'assets/icons/paintroller.png'),
+      CategoryCardWidget(title: 'Carpenter', imagePath: 'assets/icons/carpenter.png'),
+      
     ],
   ),
 ),
