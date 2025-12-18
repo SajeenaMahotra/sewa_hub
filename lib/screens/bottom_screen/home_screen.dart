@@ -111,14 +111,13 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-
             const SizedBox(height: 12),
-
             SizedBox(
-              height: 250,
+              height: 260,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                physics: const BouncingScrollPhysics(),
                 children: const [
                   ServiceCardWidget(
                     imagePath: 'assets/images/serviceelectricity.png',
@@ -137,18 +136,63 @@ class HomeScreen extends StatelessWidget {
                     ratingCount: 12,
                   ),
                   ServiceCardWidget(
-        imagePath: 'assets/images/serviceplumbing.png',
-        title: 'Plumbing Fix',
-        provider: 'John Doe',
-        price: 500,
-        rating: 4.5,
-        ratingCount: 12,
-      ),
+                    imagePath: 'assets/images/serviceelectricity.png',
+                    title: 'AC Repair & Installation',
+                    provider: 'Mike Johnson',
+                    price: 750,
+                    rating: 4.7,
+                    ratingCount: 18,
+                  ),
+                  ServiceCardWidget(
+                    imagePath: 'assets/images/watertankcleaning.png',
+                    title: 'Water Tank Cleaning',
+                    provider: 'Sarah Williams',
+                    price: 450,
+                    rating: 4.3,
+                    ratingCount: 9,
+                  ),
+                  ServiceCardWidget(
+                    imagePath: 'assets/images/serviceelectricity.png',
+                    title: 'Home Wiring',
+                    provider: 'Robert Brown',
+                    price: 800,
+                    rating: 4.8,
+                    ratingCount: 22,
+                  ),
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "All Services",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 12),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(), // parent scrolls
+              padding: const EdgeInsets.only(left: 20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // ✅ 2 cards per row
+                crossAxisSpacing: 0,
+                mainAxisSpacing: 20,
+                childAspectRatio: 0.80, // adjust for card height
+              ),
+              itemCount: 20, // later dynamic / endless
+              itemBuilder: (context, index) {
+                return ServiceCardWidget(
+                  imagePath: 'assets/images/serviceelectricity.png',
+                  title: 'Service #$index',
+                  provider: 'Provider Name',
+                  price: 500 + index * 10,
+                  rating: 4.3,
+                  ratingCount: 12,
+                );
+              },
+            ),
           ],
         ),
       ),
