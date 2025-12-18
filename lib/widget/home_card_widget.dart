@@ -34,8 +34,9 @@ class HomeCardWidget extends StatelessWidget {
                   Text(
                     'Hello !',
                     style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontFamily: 'Inter Bold'
                     ),
                   ),
                   SizedBox(height: 4),
@@ -43,7 +44,6 @@ class HomeCardWidget extends StatelessWidget {
                     'John Doe',
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],

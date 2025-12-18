@@ -8,22 +8,10 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   static const List<Map<String, String>> categories = [
-    {
-      'title': 'Plumbing',
-      'imagePath': 'assets/icons/plumbing.png',
-    },
-    {
-      'title': 'Electrician',
-      'imagePath': 'assets/icons/electrician.png',
-    },
-    {
-      'title': 'Painter',
-      'imagePath': 'assets/icons/paintroller.png',
-    },
-    {
-      'title': 'Carpenter',
-      'imagePath': 'assets/icons/carpenter.png',
-    },
+    {'title': 'Plumbing', 'imagePath': 'assets/icons/plumbing.png'},
+    {'title': 'Electrician', 'imagePath': 'assets/icons/electrician.png'},
+    {'title': 'Painter', 'imagePath': 'assets/icons/paintroller.png'},
+    {'title': 'Carpenter', 'imagePath': 'assets/icons/carpenter.png'},
   ];
   static const List<Map<String, dynamic>> popularServices = [
     {
@@ -152,9 +140,21 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                "Popular Services",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Popular Services",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "See all",
+                    style: TextStyle(
+                      color: Color(0xFFFF7940),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 12),
@@ -197,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSpacing: 20,
                 childAspectRatio: 0.80, // adjust for card height
               ),
-              itemCount: 20, // later dynamic / endless
+              itemCount: 10, // later dynamic / endless
               itemBuilder: (context, index) {
                 return ServiceCardWidget(
                   imagePath: 'assets/images/serviceelectricity.png',
