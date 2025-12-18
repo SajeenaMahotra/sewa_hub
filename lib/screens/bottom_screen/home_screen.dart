@@ -7,6 +7,67 @@ import 'package:sewa_hub/widget/service_card_widget.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  static const List<Map<String, String>> categories = [
+    {
+      'title': 'Plumbing',
+      'imagePath': 'assets/icons/plumbing.png',
+    },
+    {
+      'title': 'Electrician',
+      'imagePath': 'assets/icons/electrician.png',
+    },
+    {
+      'title': 'Painter',
+      'imagePath': 'assets/icons/paintroller.png',
+    },
+    {
+      'title': 'Carpenter',
+      'imagePath': 'assets/icons/carpenter.png',
+    },
+  ];
+  static const List<Map<String, dynamic>> popularServices = [
+    {
+      'imagePath': 'assets/images/serviceelectricity.png',
+      'title': 'Electrical grid connection',
+      'provider': 'William James',
+      'price': 600.0,
+      'rating': 4.0,
+      'ratingCount': 10,
+    },
+    {
+      'imagePath': 'assets/images/serviceplumbing.png',
+      'title': 'Plumbing Fix',
+      'provider': 'John Doe',
+      'price': 500.0,
+      'rating': 4.5,
+      'ratingCount': 12,
+    },
+    {
+      'imagePath': 'assets/images/serviceelectricity.png',
+      'title': 'AC Repair & Installation',
+      'provider': 'Mike Johnson',
+      'price': 750.0,
+      'rating': 4.7,
+      'ratingCount': 18,
+    },
+    {
+      'imagePath': 'assets/images/watertankcleaning.png',
+      'title': 'Water Tank Cleaning',
+      'provider': 'Sarah Williams',
+      'price': 450.0,
+      'rating': 4.3,
+      'ratingCount': 9,
+    },
+    {
+      'imagePath': 'assets/images/serviceelectricity.png',
+      'title': 'Home Wiring',
+      'provider': 'Robert Brown',
+      'price': 800.0,
+      'rating': 4.8,
+      'ratingCount': 22,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +88,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // 🔍 Search Bar
+            // Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -53,7 +114,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -73,37 +133,23 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 12),
-
             SizedBox(
               height: 150,
-              child: ListView(
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 20),
-                children: [
-                  CategoryCardWidget(
-                    title: 'Plumbing',
-                    imagePath: 'assets/icons/plumbing.png',
-                  ),
-                  CategoryCardWidget(
-                    title: 'Electrician',
-                    imagePath: 'assets/icons/electrician.png',
-                  ),
-                  CategoryCardWidget(
-                    title: 'Painter',
-                    imagePath: 'assets/icons/paintroller.png',
-                  ),
-                  CategoryCardWidget(
-                    title: 'Carpenter',
-                    imagePath: 'assets/icons/carpenter.png',
-                  ),
-                ],
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  return CategoryCardWidget(
+                    title: category['title']!,
+                    imagePath: category['imagePath']!,
+                  );
+                },
               ),
             ),
-
             const SizedBox(height: 24),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -114,52 +160,22 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
             SizedBox(
               height: 260,
-              child: ListView(
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 physics: const BouncingScrollPhysics(),
-                children: const [
-                  ServiceCardWidget(
-                    imagePath: 'assets/images/serviceelectricity.png',
-                    title: 'Electrical grid connection',
-                    provider: 'William James',
-                    price: 600,
-                    rating: 4.0,
-                    ratingCount: 10,
-                  ),
-                  ServiceCardWidget(
-                    imagePath: 'assets/images/serviceplumbing.png',
-                    title: 'Plumbing Fix',
-                    provider: 'John Doe',
-                    price: 500,
-                    rating: 4.5,
-                    ratingCount: 12,
-                  ),
-                  ServiceCardWidget(
-                    imagePath: 'assets/images/serviceelectricity.png',
-                    title: 'AC Repair & Installation',
-                    provider: 'Mike Johnson',
-                    price: 750,
-                    rating: 4.7,
-                    ratingCount: 18,
-                  ),
-                  ServiceCardWidget(
-                    imagePath: 'assets/images/watertankcleaning.png',
-                    title: 'Water Tank Cleaning',
-                    provider: 'Sarah Williams',
-                    price: 450,
-                    rating: 4.3,
-                    ratingCount: 9,
-                  ),
-                  ServiceCardWidget(
-                    imagePath: 'assets/images/serviceelectricity.png',
-                    title: 'Home Wiring',
-                    provider: 'Robert Brown',
-                    price: 800,
-                    rating: 4.8,
-                    ratingCount: 22,
-                  ),
-                ],
+                itemCount: popularServices.length,
+                itemBuilder: (context, index) {
+                  final service = popularServices[index];
+                  return ServiceCardWidget(
+                    imagePath: service['imagePath'] as String,
+                    title: service['title'] as String,
+                    provider: service['provider'] as String,
+                    price: service['price'] as double,
+                    rating: service['rating'] as double,
+                    ratingCount: service['ratingCount'] as int,
+                  );
+                },
               ),
             ),
             const SizedBox(height: 20),
@@ -176,7 +192,7 @@ class HomeScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(), // parent scrolls
               padding: const EdgeInsets.only(left: 20),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // ✅ 2 cards per row
+                crossAxisCount: 2, // 2 cards per row
                 crossAxisSpacing: 0,
                 mainAxisSpacing: 20,
                 childAspectRatio: 0.80, // adjust for card height
