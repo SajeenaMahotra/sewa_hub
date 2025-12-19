@@ -22,7 +22,7 @@ class ButtonOutline extends StatelessWidget {
           text,
           style: const TextStyle(
             color: Color(0xFFFF7940),
-            fontSize: 25,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),

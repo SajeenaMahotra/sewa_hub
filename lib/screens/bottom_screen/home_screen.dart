@@ -231,7 +231,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: isTablet ? 2 : 2,
-                crossAxisSpacing: 16,
+                crossAxisSpacing: 5,
                 mainAxisSpacing: 20,
                 childAspectRatio: isTablet ? 1.6 : 0.8,
               ),
