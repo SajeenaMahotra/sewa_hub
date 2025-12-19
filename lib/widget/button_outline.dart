@@ -22,8 +22,8 @@ class ButtonOutline extends StatelessWidget {
           text,
           style: const TextStyle(
             color: Color(0xFFFF7940),
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

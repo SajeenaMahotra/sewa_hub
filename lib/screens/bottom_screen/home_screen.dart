@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sewa_hub/screens/service_details_screen.dart';
 import 'package:sewa_hub/widget/category_card_widget.dart';
 import 'package:sewa_hub/widget/home_card_widget.dart';
 import 'package:sewa_hub/widget/service_card_widget.dart';
@@ -21,6 +22,16 @@ class HomeScreen extends StatelessWidget {
       'price': 600.0,
       'rating': 4.0,
       'ratingCount': 10,
+      'location': 'Creighton Avenue, Eastham',
+      'experience': '3+ years',
+      'description':
+          'I provide full electrical grid connection services including installation, wiring, diagnostics and safety checks.',
+      'serviceIncludes': [
+        'Meter Installations',
+        'Fault Diagnosis',
+        'New Wiring Setup',
+        'Fuse Setup',
+      ],
     },
     {
       'imagePath': 'assets/images/serviceplumbing.png',
@@ -58,6 +69,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isTablet = screenWidth >= 600;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -71,7 +84,10 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20.0),
               child: Text(
                 "What service are you\nlooking for ?",
-                style: const TextStyle(fontFamily: 'Inter Bold', fontSize: 30),
+                style: TextStyle(
+                  fontFamily: 'Inter Bold',
+                  fontSize: isTablet ? 36 : 30,
+                ),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -123,7 +139,8 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             SizedBox(
-              height: 150,
+              height: isTablet ? 180 : 150,
+
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 20),
@@ -174,6 +191,27 @@ class HomeScreen extends StatelessWidget {
                     price: service['price'] as double,
                     rating: service['rating'] as double,
                     ratingCount: service['ratingCount'] as int,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ServiceDetailsScreen(
+                            imagePath: service['imagePath'],
+                            title: service['title'],
+                            provider: service['provider'],
+                            rating: service['rating'],
+                            ratingCount: service['ratingCount'],
+                            location: service['location'],
+                            price: 'Rs. ${service['price']} / hr',
+                            experience: service['experience'],
+                            description: service['description'],
+                            serviceIncludes: List<String>.from(
+                              service['serviceIncludes'],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -191,11 +229,11 @@ class HomeScreen extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(), // parent scrolls
               padding: const EdgeInsets.only(left: 20),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 2 cards per row
-                crossAxisSpacing: 0,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isTablet ? 2 : 2,
+                crossAxisSpacing: 16,
                 mainAxisSpacing: 20,
-                childAspectRatio: 0.80, // adjust for card height
+                childAspectRatio: isTablet ? 1.6 : 0.8,
               ),
               itemCount: 10, // later dynamic / endless
               itemBuilder: (context, index) {
