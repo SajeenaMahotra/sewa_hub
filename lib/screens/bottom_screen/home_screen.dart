@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sewa_hub/screens/service_details_screen.dart';
-import 'package:sewa_hub/widget/category_card_widget.dart';
-import 'package:sewa_hub/widget/home_card_widget.dart';
-import 'package:sewa_hub/widget/service_card_widget.dart';
+import 'package:sewa_hub/core/widgets/category_card_widget.dart';
+import 'package:sewa_hub/core/widgets/home_card_widget.dart';
+import 'package:sewa_hub/core/widgets/service_card_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

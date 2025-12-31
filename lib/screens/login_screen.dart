@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sewa_hub/commons/snackbar.dart';
 import 'package:sewa_hub/screens/dashboard_screen.dart';
 import 'package:sewa_hub/screens/signup_screen.dart';
-import 'package:sewa_hub/widget/button1.dart';
-import 'package:sewa_hub/widget/button2.dart';
-import 'package:sewa_hub/widget/custom_text_field.dart';
+import 'package:sewa_hub/core/widgets/button1.dart';
+import 'package:sewa_hub/core/widgets/button2.dart';
+import 'package:sewa_hub/core/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

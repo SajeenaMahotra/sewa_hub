@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/widget/service_included_card.dart';
+import 'package:sewa_hub/core/widgets/service_included_card.dart';
 
 class ServiceDatailsCard extends StatelessWidget {
   const ServiceDatailsCard({

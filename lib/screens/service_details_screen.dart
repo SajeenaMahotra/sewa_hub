@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/widget/service_datails_card.dart';
-import 'package:sewa_hub/widget/service_included_card.dart';
-import 'package:sewa_hub/widget/bottom_action_card.dart';
+import 'package:sewa_hub/core/widgets/service_datails_card.dart';
+import 'package:sewa_hub/core/widgets/service_included_card.dart';
+import 'package:sewa_hub/core/widgets/bottom_action_card.dart';
 
 class ServiceDetailsScreen extends StatelessWidget {
   const ServiceDetailsScreen({

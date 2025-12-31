@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/screens/onboarding_screen.dart';
+import 'package:sewa_hub/features/onboarding/presentation/pages/onboarding_screen.dart';
 import 'package:sewa_hub/screens/splash_screen.dart';
 import 'package:sewa_hub/theme/theme_data.dart';
 
