@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sewa_hub/commons/snackbar.dart';
 import 'package:sewa_hub/screens/dashboard_screen.dart';
-import 'package:sewa_hub/screens/signup_screen.dart';
+import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
 import 'package:sewa_hub/core/widgets/custom_text_field.dart';

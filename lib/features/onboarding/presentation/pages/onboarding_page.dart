@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sewa_hub/screens/login_screen.dart';
-import 'package:sewa_hub/screens/signup_screen.dart';
+import 'package:sewa_hub/features/auth/presentation/pages/login_page.dart';
+import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
 import 'package:sewa_hub/features/onboarding/presentation/view_model/onboarding_viewmodel.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
