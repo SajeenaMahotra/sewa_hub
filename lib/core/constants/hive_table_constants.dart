@@ -5,6 +5,6 @@ class HiveTableConstant {
   static const String dbName = 'sewa_hub_db';
 
   static const int authTypeId = 0;
-  static const String userTable = 'user_table';
+  static const String authTable  = 'auth_table';
 
 }
