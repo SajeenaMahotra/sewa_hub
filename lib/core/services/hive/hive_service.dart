@@ -1,7 +1,12 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sewa_hub/core/constants/hive_table_constants.dart';
 import 'package:sewa_hub/features/auth/data/models/auth_hive_model.dart';
+
+final hiveServiceProvider = Provider<HiveService>((ref) {
+  return HiveService();
+});
 
 class HiveService {
   // ==================== Init ====================
@@ -69,7 +74,7 @@ class HiveService {
   }
 
   /// Sign out (clear auth data)
-  Future<void> signOut() async {
+  Future<void> logOut() async {
     await _authBox.clear();
   }
 
@@ -77,5 +82,13 @@ class HiveService {
 
   Future<void> close() async {
     await Hive.close();
+  }
+
+  //is email exists
+  bool isEmailExists(String email) {
+    final user = _authBox.values.where(
+      (user) => user.email == email,
+    );
+    return user.isNotEmpty;
   }
 }
