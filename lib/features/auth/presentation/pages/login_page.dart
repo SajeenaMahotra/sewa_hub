@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
 import 'package:sewa_hub/screens/dashboard_screen.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
@@ -69,17 +70,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         _emailController.clear();
         _passwordController.clear();
 
-        // Navigate after success
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const DashboardScreen(),
-              ),
-            );
-          }
-        });
+        AppRoutes.pushReplacement(
+          context,
+          const DashboardScreen(),
+        );
       }
     });
 
@@ -244,12 +238,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SignupScreen(),
-                                  ),
-                                );
+                               AppRoutes.push(
+      context,
+      const SignupScreen(),
+    );
                               },
                               child: const Text(
                                 "Create One",
