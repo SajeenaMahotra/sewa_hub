@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/commons/snackbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/utils/snackbar_utils.dart';
 import 'package:sewa_hub/screens/dashboard_screen.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
 import 'package:sewa_hub/core/widgets/custom_text_field.dart';
+import 'package:sewa_hub/features/auth/presentation/state/auth_state.dart';
+import 'package:sewa_hub/features/auth/presentation/view_model/auth_view_model.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -26,31 +29,18 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _validateAndLogin() {
+  Future<void> _validateAndLogin() async {
     if (_formKey.currentState!.validate()) {
-      // Login successful
-      showSnackbar(
-        context: context,
-        message: "You’re now logged in.",
-        color: Colors.green, title: 'Login Successful!',
+      // Form is valid, proceed with login
+      ref.read(authViewModelProvider.notifier).login(
+        email: _emailController.text,
+        password: _passwordController.text,
       );
-      // Clear fields after successful login
-      _emailController.clear();
-      _passwordController.clear();
-      // Navigate to Dashboard after 1 second delay
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardScreen()),
-          );
-        }
-      });
     } else {
-      showSnackbar(
-        context: context,
-        message: "Please check your details and try again.",
-        color: Colors.red, title: 'Oops!',
+      // Form validation failed, show error snackbar
+      SnackbarUtils.showError(
+        context,
+        message: "Please fix the errors in the form",
       );
     }
   }
@@ -58,6 +48,41 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final authState = ref.watch(authViewModelProvider);
+
+    ref.listen<AuthState>(authViewModelProvider, (previous, next) {
+      if (next.status == AuthStatus.error) {
+        SnackbarUtils.showError(
+          context,
+          message: next.errorMessage ?? 'Failed to login',
+        );
+      }
+
+      if (next.status == AuthStatus.authenticated) {
+        SnackbarUtils.showSuccess(
+          context,
+          message: "You're now logged in",
+          title: 'Login Successful!',
+        );
+
+        // Clear fields
+        _emailController.clear();
+        _passwordController.clear();
+
+        // Navigate after success
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const DashboardScreen(),
+              ),
+            );
+          }
+        });
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -173,7 +198,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Login Button
                         Padding(
                           padding: const EdgeInsets.only(right: 10, left: 10),
-                          child: Button2(text: "Login", onPressed: _validateAndLogin),
+                          child: Button2(
+                            text: "Login",
+                            onPressed: _validateAndLogin,
+                          ),
                         ),
                         const SizedBox(height: 20),
                         const Text(
@@ -192,14 +220,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               logoPath: 'assets/images/google_logo.png',
                               onPressed: () {
                                 // Add Google login logic
-                              }, logoSize: 60,
+                              },
+                              logoSize: 60,
                             ),
                             const SizedBox(width: 16),
                             Button1(
                               logoPath: 'assets/images/apple_logo.png',
                               onPressed: () {
                                 // Add Apple login logic
-                              }, logoSize: 60,
+                              },
+                              logoSize: 60,
                             ),
                           ],
                         ),
