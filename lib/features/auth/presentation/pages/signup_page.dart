@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/commons/snackbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/utils/snackbar_utils.dart';
+
 import 'package:sewa_hub/features/auth/presentation/pages/login_page.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
 import 'package:sewa_hub/core/widgets/custom_text_field.dart';
+import 'package:sewa_hub/features/auth/presentation/state/auth_state.dart';
+import 'package:sewa_hub/features/auth/presentation/view_model/auth_view_model.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -29,42 +33,64 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _validateAndSignup() {
-    if (_formKey.currentState!.validate()) {
-      // Signup successful
-      showSnackbar(
-        context: context,
-        message: "Your account has been successfully created.",
-        color: Colors.green,
-        title: 'Success !',
+  Future<void> _validateAndSignup() async {
+  if (_formKey.currentState!.validate()) {
+    // Form is valid, proceed with registration
+    ref.read(authViewModelProvider.notifier).register(
+      fullName: _fullnameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+  } else {
+    // Form validation failed, show error snackbar
+    SnackbarUtils.showError(
+      context,
+      message: "Please fix the errors in the form",
+    );
+  }
+}
+
+  @override
+  Widget build(BuildContext context) {
+
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final authstate = ref.watch(authViewModelProvider);
+
+    ref.listen<AuthState>(authViewModelProvider, (previous, next) {
+    if (next.status == AuthStatus.error) {
+      SnackbarUtils.showError(
+        context,
+        message: next.errorMessage ?? 'Failed to register',
       );
-      // Clear fields after successful signup
+    }
+
+    if (next.status == AuthStatus.registered) {
+      SnackbarUtils.showSuccess(
+        context,
+        message: 'Registration successful',
+      );
+
+      // Clear fields
       _fullnameController.clear();
       _emailController.clear();
       _passwordController.clear();
       _confirmpasswordController.clear();
-      // Navigate to Login after 1 second delay
+
+      // Navigate after success
       Future.delayed(const Duration(seconds: 1), () {
         if (mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
+            MaterialPageRoute(
+              builder: (_) => const LoginScreen(),
+            ),
           );
         }
       });
-    } else {
-      showSnackbar(
-        context: context,
-        message: "Please fix the errors",
-        color: Colors.red,
-        title: 'Oops!',
-      );
     }
-  }
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
