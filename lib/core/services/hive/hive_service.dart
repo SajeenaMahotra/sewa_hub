@@ -12,7 +12,7 @@ class HiveService {
   // ==================== Init ====================
 
   Future<void> init() async {
-    final directory = await getApplicationCacheDirectory();
+    final directory = await getApplicationDocumentsDirectory();
     final path = '${directory.path}/${HiveTableConstant.dbName}';
     Hive.init(path);
     _registerAdapters();
@@ -20,11 +20,6 @@ class HiveService {
   }
 
   void _registerAdapters() {
-    if (!Hive.isAdapterRegistered(HiveTableConstant.authTypeId)) {
-      Hive.registerAdapter(AuthHiveModelAdapter());
-    }
-
-    // Register other adapters
     if (!Hive.isAdapterRegistered(HiveTableConstant.authTypeId)) {
       Hive.registerAdapter(AuthHiveModelAdapter());
     }

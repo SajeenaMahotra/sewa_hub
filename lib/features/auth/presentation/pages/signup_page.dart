@@ -34,55 +34,50 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Future<void> _validateAndSignup() async {
-  if (_formKey.currentState!.validate()) {
-    // Form is valid, proceed with registration
-    ref.read(authViewModelProvider.notifier).register(
-      fullName: _fullnameController.text,
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
-  } else {
-    // Form validation failed, show error snackbar
-    SnackbarUtils.showError(
-      context,
-      message: "Please fix the errors in the form",
-    );
+    if (_formKey.currentState!.validate()) {
+      // Form is valid, proceed with registration
+      ref
+          .read(authViewModelProvider.notifier)
+          .register(
+            fullName: _fullnameController.text,
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+    } else {
+      // Form validation failed, show error snackbar
+      SnackbarUtils.showError(
+        context,
+        message: "Please fix the errors in the form",
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
 
-    final authstate = ref.watch(authViewModelProvider);
-
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
-    if (next.status == AuthStatus.error) {
-      SnackbarUtils.showError(
-        context,
-        message: next.errorMessage ?? 'Failed to register',
-      );
-    }
-
-    if (next.status == AuthStatus.registered) {
-      SnackbarUtils.showSuccess(
-        context,
-        message: 'Registration successful',
-      );
-
-      // Clear fields
-      _fullnameController.clear();
-      _emailController.clear();
-      _passwordController.clear();
-      _confirmpasswordController.clear();
-
-      AppRoutes.pushReplacement(
+      if (next.status == AuthStatus.error) {
+        SnackbarUtils.showError(
           context,
-          const LoginScreen(),
+          message: next.errorMessage ?? 'Failed to register',
         );
-    }
-  });
+      }
+
+      if (next.status == AuthStatus.registered) {
+        SnackbarUtils.showSuccess(context, message: 'Registration successful');
+
+        // Clear fields
+        _fullnameController.clear();
+        _emailController.clear();
+        _passwordController.clear();
+        _confirmpasswordController.clear();
+
+        AppRoutes.pushReplacement(context, const LoginScreen());
+      }
+    });
+
+    final authstate = ref.watch(authViewModelProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -226,9 +221,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               GestureDetector(
                                 onTap: () {
                                   AppRoutes.pushReplacement(
-                                  context,
-                                  const LoginScreen(),
-                                );
+                                    context,
+                                    const LoginScreen(),
+                                  );
                                 },
                                 child: const Text(
                                   "Login",
@@ -240,38 +235,39 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                 ),
                               ),
                             ],
-  
-                          ), 
-                          const SizedBox(height: 20),
-                        const Text(
-                          "Or continue with",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color.fromARGB(255, 120, 120, 120),
                           ),
-                        ),
-                        const SizedBox(height: 25),
-                        // Google and Apple Buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Button1(
-                              logoPath: 'assets/images/google_logo.png',
-                              onPressed: () {
-                                // Add Google login logic
-                              }, logoSize: 60,
+                          const SizedBox(height: 20),
+                          const Text(
+                            "Or continue with",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 120, 120, 120),
                             ),
-                            const SizedBox(width: 16),
-                            Button1(
-                              logoPath: 'assets/images/apple_logo.png',
-                              onPressed: () {
-                                // Add Apple login logic
-                              }, logoSize: 60,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 30),
-                    
+                          ),
+                          const SizedBox(height: 25),
+                          // Google and Apple Buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Button1(
+                                logoPath: 'assets/images/google_logo.png',
+                                onPressed: () {
+                                  // Add Google login logic
+                                },
+                                logoSize: 60,
+                              ),
+                              const SizedBox(width: 16),
+                              Button1(
+                                logoPath: 'assets/images/apple_logo.png',
+                                onPressed: () {
+                                  // Add Apple login logic
+                                },
+                                logoSize: 60,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 30),
+
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24.0,
