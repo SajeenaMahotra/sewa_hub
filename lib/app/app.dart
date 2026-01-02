@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sewa_hub/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:sewa_hub/screens/splash_screen.dart';
-import 'package:sewa_hub/theme/theme_data.dart';
+import 'package:sewa_hub/app/theme/theme_data.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

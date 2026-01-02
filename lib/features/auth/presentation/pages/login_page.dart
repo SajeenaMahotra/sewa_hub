@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
-import 'package:sewa_hub/screens/dashboard_screen.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
