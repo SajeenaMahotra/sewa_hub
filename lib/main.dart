@@ -5,19 +5,26 @@ import 'package:sewa_hub/core/services/hive/hive_service.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await HiveService().init();
-
-  //Shared prefs
+  // Initialize SharedPreferences
   final sharedPrefs = await SharedPreferences.getInstance();
 
+  // Create a ProviderContainer and override SharedPreferences
+  final container = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+    ],
+  );
+
+  // Initialize HiveService
+  await container.read(hiveServiceProvider).init();
+
+  // Run the app with UncontrolledProviderScope 
   runApp(
-    ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
-      ],
+    UncontrolledProviderScope(
+      container: container,
       child: const App(),
     ),
   );

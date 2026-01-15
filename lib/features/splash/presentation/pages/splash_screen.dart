@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:sewa_hub/features/onboarding/presentation/pages/onboarding_page.dart';
@@ -26,12 +27,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       final isLoggedIn = userSessionService.isLoggedIn();
 
       if(isLoggedIn){
-        Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()));
+        AppRoutes.pushReplacement(context, const DashboardScreen());
       } else{
-        Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const OnboardingScreen()));
-
+        AppRoutes.pushReplacement(context, const OnboardingScreen());
       }
       
     });

@@ -2,13 +2,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sewa_hub/core/constants/hive_table_constants.dart';
+import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/auth/data/models/auth_hive_model.dart';
 
 final hiveServiceProvider = Provider<HiveService>((ref) {
-  return HiveService();
+  final userSessionService = ref.read(userSessionServiceProvider);
+  return HiveService(userSessionService: userSessionService);
 });
 
 class HiveService {
+
+  final UserSessionService _userSessionService;
+
+  HiveService({
+    required UserSessionService userSessionService,
+  }) : _userSessionService = userSessionService;
+  
   // ==================== Init ====================
 
   Future<void> init() async {
@@ -70,7 +79,7 @@ class HiveService {
 
   /// Sign out (clear auth data)
   Future<void> logOut() async {
-    await _authBox.clear();
+    await _userSessionService.clearUserSession();
   }
 
   // ==================== Utils ====================
