@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/services/storage/user_session_service.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:sewa_hub/features/onboarding/presentation/pages/onboarding_page.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
 
   void initState(){
@@ -18,10 +21,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateToOnboarding(){
     Future.delayed(const Duration(seconds: 2),() {
-      if (mounted) {
+      if (mounted) return; 
+      final userSessionService = ref.read(userSessionServiceProvider);
+      final isLoggedIn = userSessionService.isLoggedIn();
+
+      if(isLoggedIn){
+        Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const DashboardScreen()));
+      } else{
         Navigator.push(context,
         MaterialPageRoute(builder: (context) => const OnboardingScreen()));
+
       }
+      
     });
   }
 
