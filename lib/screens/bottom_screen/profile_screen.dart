@@ -7,7 +7,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Center(
-        child: Text("Booking Screen"),
+        child: Text("Profile Screen"),
       ),
     );
   }

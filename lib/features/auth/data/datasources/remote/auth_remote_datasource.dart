@@ -4,6 +4,7 @@ import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/auth/data/datasources/auth_datasource.dart';
 import 'package:sewa_hub/features/auth/data/models/auth_api_model.dart';
+import 'package:sewa_hub/features/auth/data/models/auth_hive_model.dart';
 
 //Create provider
 final authRemoteDatasourceProvider = Provider<IAuthRemoteDataSource>((ref) {
@@ -30,9 +31,26 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<AuthApiModel?> login(String email, String password) {
-    // TODO: implement login
-    throw UnimplementedError();
+  Future<AuthApiModel?> login(String email, String password) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.login,
+      data: {'email': email, 'password': password},
+    );
+
+    if (response.data['success'] == true) {
+      final data = response.data['data'] as Map<String, dynamic>;
+      final user = AuthApiModel.fromJson(data);
+
+      //Save to session
+      await _userSessionService.saveUserSession(
+        userId: user.authId!,
+        email: user.email,
+        fullName: user.fullName,
+      );
+      return user;
+    }
+
+    return null;
   }
 
   @override
@@ -41,15 +59,12 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
       ApiEndpoints.register,
       data: user.toJson(),
     );
-    if(response.data['success'] == true){
+    if (response.data['success'] == true) {
       final data = response.data['data'] as Map<String, dynamic>;
-      final registeredUser= AuthApiModel.fromJson(data);
+      final registeredUser = AuthApiModel.fromJson(data);
       return registeredUser;
     }
 
     return user;
-
   }
-
-  
 }
