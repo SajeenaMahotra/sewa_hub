@@ -1,22 +1,38 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/core/error/failures.dart';
+import 'package:sewa_hub/core/services/connectivity/network_info.dart';
 import 'package:sewa_hub/features/auth/data/datasources/auth_datasource.dart';
 import 'package:sewa_hub/features/auth/data/datasources/local/auth_local_datasource.dart';
+import 'package:sewa_hub/features/auth/data/datasources/remote/auth_remote_datasource.dart';
 import 'package:sewa_hub/features/auth/data/models/auth_hive_model.dart';
 import 'package:sewa_hub/features/auth/domain/entities/auth_entity.dart';
 import 'package:sewa_hub/features/auth/domain/repositories/auth_repository.dart';
 
 //provider
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
-  return AuthRepository(authDatasource: ref.watch(authLocalDatasourceProvider));
+  final authDatasource = ref.read(authLocalDatasourceProvider);
+  final authRemoteDatasource = ref.read(authRemoteDatasourceProvider);
+  final networkInfo = ref.read(networkInfoProvider);
+  return AuthRepository(
+    authDatasource: authDatasource,
+    authRemoteDataSource: authRemoteDatasource,
+    networkInfo: networkInfo,
+  );
 });
 
 class AuthRepository implements IAuthRepository {
   final IAuthLocalDatasource _authDatasource;
+  final IAuthRemoteDataSource _authRemoteDataSource;
+  final NetworkInfo _networkInfo;
 
-  AuthRepository({required IAuthLocalDatasource authDatasource})
-    : _authDatasource = authDatasource;
+  AuthRepository({
+    required IAuthLocalDatasource authDatasource,
+    required IAuthRemoteDataSource authRemoteDataSource,
+    required NetworkInfo networkInfo,
+  }) : _authDatasource = authDatasource,
+       _authRemoteDataSource = authRemoteDataSource,
+       _networkInfo = networkInfo;
 
   @override
   Future<Either<Failure, AuthEntity>> getCurrentUser() async {
