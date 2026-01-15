@@ -84,4 +84,10 @@ class AuthLocalDatasource implements IAuthLocalDatasource {
     // TODO: implement getUserById
     throw UnimplementedError();
   }
+  
+  @override
+  Future<AuthHiveModel?> getUserByEmail(String email) {
+    // TODO: implement getUserByEmail
+    throw UnimplementedError();
+  }
 }

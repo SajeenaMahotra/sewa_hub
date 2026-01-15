@@ -7,6 +7,7 @@ abstract interface class IAuthLocalDatasource{
   Future<AuthHiveModel> getCurrentUser();
   Future<bool> logOut();
   Future<AuthHiveModel?> getUserById(String authId);
+  Future<AuthHiveModel?> getUserByEmail(String email);
   //get email exists
   Future<bool> isEmailExists(String email);
 }

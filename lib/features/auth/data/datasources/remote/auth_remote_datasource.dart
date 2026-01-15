@@ -4,7 +4,6 @@ import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/auth/data/datasources/auth_datasource.dart';
 import 'package:sewa_hub/features/auth/data/models/auth_api_model.dart';
-import 'package:sewa_hub/features/auth/data/models/auth_hive_model.dart';
 
 //Create provider
 final authRemoteDatasourceProvider = Provider<IAuthRemoteDataSource>((ref) {
