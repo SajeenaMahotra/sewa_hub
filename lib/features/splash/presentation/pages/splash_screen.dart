@@ -21,15 +21,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   void _navigateToOnboarding(){
     Future.delayed(const Duration(seconds: 2),() {
-      if (mounted) return; 
+      if ( !mounted ) return; 
       final userSessionService = ref.read(userSessionServiceProvider);
       final isLoggedIn = userSessionService.isLoggedIn();
 
       if(isLoggedIn){
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => const DashboardScreen()));
       } else{
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => const OnboardingScreen()));
 
       }
