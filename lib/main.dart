@@ -9,6 +9,8 @@ void main() async {
   final hiveService = HiveService();
   await hiveService.init();
 
+  
+  
   runApp(
     ProviderScope(
       overrides: [

@@ -53,6 +53,10 @@ dependencies:
 
   provider: ^6.0.0
 
+  #Authentication
+  flutter_secure_storage: ^10.0.0
+  shared_preferences: ^2.5.4
+
   # Permissions handler
   equatable: ^2.0.7
   dartz: ^0.10.1
