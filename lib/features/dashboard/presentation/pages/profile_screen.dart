@@ -5,6 +5,7 @@ import 'package:sewa_hub/features/auth/data/repositories/auth_repository.dart';
 import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/login_page.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -37,7 +38,7 @@ class ProfileScreen extends ConsumerWidget {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            // ================= Profile Header Card =================
+            //Profile header card
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -71,7 +72,10 @@ class ProfileScreen extends ConsumerWidget {
                       text: "Edit",
                       fontSize: 16,
                       onPressed: () {
-                        // navigate to edit profile page later
+                        AppRoutes.push(
+        context,
+        EditProfilePage(),
+      );
                       },
                     ),
                   ),
@@ -79,7 +83,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
 
-            // ================= Menu List =================
+            //Menu List
             _menuItem(
               icon: Icons.location_on_outlined,
               label: "Location",
@@ -114,7 +118,7 @@ class ProfileScreen extends ConsumerWidget {
 
             const SizedBox(height: 24),
 
-            // ================= Logout Section =================
+            //Logout section
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.symmetric(vertical: 4),
@@ -169,7 +173,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  // ================= Reusable Menu Item =================
+  // Reusable Menu Item 
   Widget _menuItem({
     required IconData icon,
     required String label,
