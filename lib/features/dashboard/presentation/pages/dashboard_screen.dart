@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/screens/bottom_screen/booking_screen.dart';
-import 'package:sewa_hub/screens/bottom_screen/chat_screen.dart';
-import 'package:sewa_hub/screens/bottom_screen/home_screen.dart';
-import 'package:sewa_hub/screens/bottom_screen/profile_screen.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/booking_screen.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/chat_screen.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/home_screen.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

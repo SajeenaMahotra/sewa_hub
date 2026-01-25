@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 class Button2 extends StatelessWidget {
   const Button2({super.key,
   required this.text,
-  required this.onPressed});
+  required this.onPressed,
+  this.fontSize = 25,
+  });
 
   final String text;
   final VoidCallback onPressed;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +25,14 @@ class Button2 extends StatelessWidget {
                 horizontal: 20,
                 vertical: 10,
               ),
-              shape: RoundedRectangleBorder(
+              shape: RoundedRectangleBorder(  
                 borderRadius: BorderRadius.circular(15),
               )
           ),onPressed: onPressed, child: 
         Text(text,
         style: TextStyle(
               color: Colors.white,
-              fontSize: 25,
+              fontSize:   fontSize,
             ),
         )),
       ),
