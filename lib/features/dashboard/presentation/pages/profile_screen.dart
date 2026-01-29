@@ -5,7 +5,7 @@ import 'package:sewa_hub/features/auth/data/repositories/auth_repository.dart';
 import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/login_page.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
-import 'package:sewa_hub/features/dashboard/presentation/pages/edit_profile_screen.dart';
+import 'package:sewa_hub/features/profile/presentation/pages/edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -72,10 +72,7 @@ class ProfileScreen extends ConsumerWidget {
                       text: "Edit",
                       fontSize: 16,
                       onPressed: () {
-                        AppRoutes.push(
-        context,
-        EditProfilePage(),
-      );
+                        AppRoutes.push(context, const EditProfilePage());
                       },
                     ),
                   ),
@@ -173,7 +170,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  // Reusable Menu Item 
+  // Reusable Menu Item
   Widget _menuItem({
     required IconData icon,
     required String label,

@@ -1,13 +1,39 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
 import 'package:sewa_hub/core/widgets/button_outline.dart';
 import 'package:sewa_hub/core/widgets/custom_text_field.dart';
 
-class EditProfilePage extends StatelessWidget {
-  EditProfilePage({super.key});
+class EditProfilePage extends ConsumerStatefulWidget {
+  const EditProfilePage({super.key});
 
-  final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  @override
+  ConsumerState<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends ConsumerState<EditProfilePage> {
+  late TextEditingController fullNameController;
+  late TextEditingController emailController;
+
+  @override
+  void initState() {
+    super.initState();
+    fullNameController = TextEditingController();
+    emailController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+  final List<XFile>_selectedMedia = [];
+
 
   @override
   Widget build(BuildContext context) {
