@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -111,6 +113,53 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     }
   }
 
+  //code for dialogBox: showDialog for men
+  Future<void> _pickMedia() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Take Photo'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await _cameraPermission();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await _galleryPermission();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete),
+                title: Text('Remove Photo'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    _selectedMedia.clear();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showPermissionDeniedDialog() {
     showDialog(
       context: context,
@@ -145,16 +194,25 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: NetworkImage(
-                      'https://via.placeholder.com/150',
-                    ), // replace with user's photo
+                    backgroundColor: Colors.orange.shade100,
+                    backgroundImage: _selectedMedia.isNotEmpty
+                        ? FileImage(File(_selectedMedia.first.path))
+                        : null,
+                    child: _selectedMedia.isEmpty
+                        ? const Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Colors.orange,
+                          )
+                        : null,
                   ),
+
                   Positioned(
                     bottom: 0,
                     right: 0,
                     child: GestureDetector(
                       onTap: () async {
-                        await _cameraPermission();
+                        await _pickMedia();
                       },
                       child: Container(
                         decoration: const BoxDecoration(
