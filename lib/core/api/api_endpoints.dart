@@ -39,4 +39,8 @@ class ApiEndpoints {
   static const String auth = 'auth';
   static const String register = 'auth/register';
   static const String login = 'auth/login';
+
+  // ================= Profile Endpoints =================
+  static const String whoami = 'auth/whoami';
+  static const String updateProfile = 'auth/update-profile';
 }
