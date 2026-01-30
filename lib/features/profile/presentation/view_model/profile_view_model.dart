@@ -1,5 +1,7 @@
 // lib/features/profile/presentation/viewmodel/profile_viewmodel.dart
 
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:sewa_hub/features/profile/domain/usecases/update_profile_usecase.dart';
@@ -45,14 +47,14 @@ class ProfileViewModel extends Notifier<ProfileState> {
   Future<void> updateProfile({
     required String fullName,
     required String email,
-    String? profilePicture,
+    File? imageFile,
   }) async {
     state = state.copyWith(status: ProfileStatus.loading);
     
     final params = UpdateProfileUsecaseParam(
       fullName: fullName,
       email: email,
-      profilePicture: profilePicture,
+      imageFile: imageFile,
     );
     
     final result = await _updateProfileUsecase.call(params);
@@ -66,7 +68,6 @@ class ProfileViewModel extends Notifier<ProfileState> {
       },
       (isUpdated) {
         if (isUpdated) {
-          // Refresh profile after update
           getProfile();
         } else {
           state = state.copyWith(

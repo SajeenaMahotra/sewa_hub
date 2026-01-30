@@ -1,5 +1,7 @@
 // lib/features/profile/domain/usecases/update_profile_usecase.dart
 
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,19 +14,19 @@ import 'package:sewa_hub/features/profile/domain/repositories/profile_repository
 class UpdateProfileUsecaseParam extends Equatable {
   final String fullName;
   final String email;
-  final String? profilePicture;
+  final File? imageFile;
 
   const UpdateProfileUsecaseParam({
     required this.fullName,
     required this.email,
-    this.profilePicture,
+    this.imageFile,
   });
 
   @override
   List<Object?> get props => [
         fullName,
         email,
-        profilePicture,
+        imageFile,
       ];
 }
 
@@ -45,8 +47,8 @@ class UpdateProfileUsecase implements UsecaseWithParams<bool, UpdateProfileUseca
     final entity = ProfileEntity(
       fullName: params.fullName,
       email: params.email,
-      profilePicture: params.profilePicture,
+      profilePicture: null, // Will be updated via imageFile
     );
-    return _profileRepository.updateProfile(entity);
+    return _profileRepository.updateProfile(entity, imageFile: params.imageFile); // ← ADD imageFile here!
   }
 }

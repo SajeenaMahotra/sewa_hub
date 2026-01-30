@@ -16,7 +16,7 @@ class ProfileApiModel{
     return {
       "fullname": fullName,
       "email": email,
-      "profilePicture": profilePicture,
+      'imageUrl': profilePicture
     };
   }
 
@@ -25,7 +25,7 @@ class ProfileApiModel{
     return ProfileApiModel(
       fullName: json["fullname"] as String? ?? "",
       email: json["email"] as String? ?? "",
-      profilePicture: json["profilePicture"] as String?,
+      profilePicture: json["imageUrl"] as String?,
     );
   }
 

@@ -8,6 +8,8 @@ import 'package:sewa_hub/core/utils/snackbar_utils.dart';
 import 'package:sewa_hub/core/widgets/button2.dart';
 import 'package:sewa_hub/core/widgets/button_outline.dart';
 import 'package:sewa_hub/core/widgets/custom_text_field.dart';
+import 'package:sewa_hub/features/profile/presentation/state/profile_state.dart';
+import 'package:sewa_hub/features/profile/presentation/view_model/profile_view_model.dart';
 
 class EditProfilePage extends ConsumerStatefulWidget {
   const EditProfilePage({super.key});
@@ -25,6 +27,11 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     super.initState();
     fullNameController = TextEditingController();
     emailController = TextEditingController();
+
+    // Fetch profile on page load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(profileViewModelProvider.notifier).getProfile();
+    });
   }
 
   @override
@@ -34,7 +41,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     super.dispose();
   }
 
-  final List<XFile> _selectedMedia = []; //images.video
+  final List<XFile> _selectedMedia = [];
   final ImagePicker _imagePicker = ImagePicker();
 
   Future<bool> _askUserPermission(Permission permission) async {
@@ -55,7 +62,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     return false;
   }
 
-  //code for camera
   Future<void> _cameraPermission() async {
     final hasPermission = await _askUserPermission(Permission.camera);
     if (!hasPermission) return;
@@ -73,7 +79,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     }
   }
 
-  //code for gallery
   Future<void> _galleryPermission({bool allowMultiple = false}) async {
     try {
       if (allowMultiple) {
@@ -103,22 +108,20 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     } catch (e) {
       debugPrint("Error picking image: $e");
 
-      if (!mounted) {
+      if (mounted) {
         SnackbarUtils.showError(
           context,
           message: "Unable to pick image from the gallery",
         );
       }
-      ;
     }
   }
 
-  //code for dialogBox: showDialog for men
   Future<void> _pickMedia() async {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => SafeArea(
@@ -128,24 +131,24 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text('Take Photo'),
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Take Photo'),
                 onTap: () async {
                   Navigator.of(context).pop();
                   await _cameraPermission();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Choose from Gallery'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from Gallery'),
                 onTap: () async {
                   Navigator.of(context).pop();
                   await _galleryPermission();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.delete),
-                title: Text('Remove Photo'),
+                leading: const Icon(Icons.delete),
+                title: const Text('Remove Photo'),
                 onTap: () {
                   Navigator.of(context).pop();
                   setState(() {
@@ -164,11 +167,20 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Permission required"),
-        content: Text("Go to settings to grant permission"),
+        title: const Text("Permission required"),
+        content: const Text("Go to settings to grant permission"),
         actions: [
-          TextButton(onPressed: () {}, child: Text('Cancel')),
-          TextButton(onPressed: () {}, child: Text('Open Settings')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
         ],
       ),
     );
@@ -176,6 +188,27 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileViewModelProvider);
+
+    // Populate fields when profile loads
+    ref.listen<ProfileState>(profileViewModelProvider, (previous, next) {
+      if (next.status == ProfileStatus.loaded && next.profileEntity != null) {
+        fullNameController.text = next.profileEntity!.fullName;
+        emailController.text = next.profileEntity!.email;
+      }
+
+      if (next.status == ProfileStatus.updated) {
+        SnackbarUtils.showSuccess(
+          context,
+          message: 'Profile updated successfully',
+        );
+      }
+
+      if (next.status == ProfileStatus.error && next.errorMessage != null) {
+        SnackbarUtils.showError(context, message: next.errorMessage!);
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -183,91 +216,124 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile photo
-            Center(
-              child: Stack(
+      body: profileState.status == ProfileStatus.loading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.orange.shade100,
-                    backgroundImage: _selectedMedia.isNotEmpty
-                        ? FileImage(File(_selectedMedia.first.path))
-                        : null,
-                    child: _selectedMedia.isEmpty
-                        ? const Icon(
-                            Icons.person,
-                            size: 50,
-                            color: Colors.orange,
-                          )
-                        : null,
-                  ),
-
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () async {
-                        await _pickMedia();
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
+                  // Profile photo
+                  Center(
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+  radius: 60,
+  backgroundColor: Colors.orange.shade100,
+  backgroundImage: _selectedMedia.isNotEmpty
+      ? FileImage(File(_selectedMedia.first.path))
+      : profileState.profileEntity?.profilePicture != null
+          ? NetworkImage(
+              'http://10.0.2.2:5050${profileState.profileEntity!.profilePicture!}', // ← Add base URL
+            )
+          : null,
+  child: _selectedMedia.isEmpty &&
+          profileState.profileEntity?.profilePicture == null
+      ? const Icon(
+          Icons.person,
+          size: 50,
+          color: Colors.orange,
+        )
+      : null,
+),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () async {
+                              await _pickMedia();
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.orange,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
                         ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
+                      ],
                     ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  const Text(
+                    "Edit Profile",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+
+                  CustomTextField(
+                    controller: fullNameController,
+                    labelText: "Full Name",
+                    hintText: "Enter your full name",
+                    errorText: "Full name is required",
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 20),
+
+                  CustomTextField(
+                    controller: emailController,
+                    labelText: "Email",
+                    hintText: "Enter your email",
+                    errorText: "Email is required",
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 30),
+
+                  Button2(
+                    text: "Update Profile",
+                    fontSize: 20,
+                    onPressed: () {
+                      if (fullNameController.text.isEmpty ||
+                          emailController.text.isEmpty) {
+                        SnackbarUtils.showError(
+                          context,
+                          message: 'Please fill all fields',
+                        );
+                        return;
+                      }
+
+                      // Convert XFile to File if image is selected
+                      File? imageFile;
+                      if (_selectedMedia.isNotEmpty) {
+                        imageFile = File(_selectedMedia.first.path);
+                      }
+
+                      ref
+                          .read(profileViewModelProvider.notifier)
+                          .updateProfile(
+                            fullName: fullNameController.text.trim(),
+                            email: emailController.text.trim(),
+                            imageFile: imageFile,
+                          );
+                    },
+                  ),
+                  const SizedBox(height: 15),
+
+                  ButtonOutline(
+                    text: "Change Password",
+                    onPressed: () {},
+                    color: Colors.red,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
-            const Text(
-              "Edit Profile",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-
-            CustomTextField(
-              controller: fullNameController,
-              labelText: "Full Name",
-              hintText: "Enter your full name",
-              errorText: "Full name is required",
-              obscureText: false,
-            ),
-            const SizedBox(height: 20),
-
-            CustomTextField(
-              controller: emailController,
-              labelText: "Email",
-              hintText: "Enter your email",
-              errorText: "Email is required",
-              obscureText: false,
-            ),
-            const SizedBox(height: 30),
-
-            Button2(text: "Update Profile", fontSize: 20, onPressed: () {}),
-            const SizedBox(height: 15),
-
-            ButtonOutline(
-              text: "Change Password",
-              onPressed: () {},
-              color: Colors.red,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

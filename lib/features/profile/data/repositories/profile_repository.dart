@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/core/error/failures.dart';
 import 'package:sewa_hub/features/profile/data/datasources/remote/profile_remote_datasource.dart';
-
 import 'package:sewa_hub/features/profile/domain/entities/profile_entity.dart';
 import 'package:sewa_hub/features/profile/domain/repositories/profile_repository.dart';
 
@@ -25,7 +26,7 @@ class ProfileRepository implements IProfileRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> updateProfile(ProfileEntity profile) {
-    return _remoteDataSource.updateProfile(profile);
+  Future<Either<Failure, bool>> updateProfile(ProfileEntity profile, {File? imageFile}) {
+    return _remoteDataSource.updateProfile(profile, imageFile: imageFile);
   }
 }
