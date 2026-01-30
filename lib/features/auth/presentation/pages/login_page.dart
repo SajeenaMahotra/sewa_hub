@@ -207,25 +207,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 25),
                         // Google and Apple Buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Button1(
-                              logoPath: 'assets/images/google_logo.png',
-                              onPressed: () {
-                                // Add Google login logic
-                              },
-                              logoSize: 60,
-                            ),
-                            const SizedBox(width: 16),
-                            Button1(
-                              logoPath: 'assets/images/apple_logo.png',
-                              onPressed: () {
-                                // Add Apple login logic
-                              },
-                              logoSize: 60,
-                            ),
-                          ],
+                        SingleChildScrollView(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Button1(
+                                logoPath: 'assets/images/google_logo.png',
+                                onPressed: () {
+                                  // Add Google login logic
+                                },
+                                logoSize: 60,
+                              ),
+                              const SizedBox(width: 16),
+                              Button1(
+                                logoPath: 'assets/images/apple_logo.png',
+                                onPressed: () {
+                                  // Add Apple login logic
+                                },
+                                logoSize: 60,
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 30),
                         // Don't have account link
@@ -238,10 +240,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                               AppRoutes.push(
-      context,
-      const SignupScreen(),
-    );
+                               AppRoutes.push(context,const SignupScreen(),);
                               },
                               child: const Text(
                                 "Create One",
