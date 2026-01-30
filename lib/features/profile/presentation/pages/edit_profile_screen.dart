@@ -228,24 +228,27 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     child: Stack(
                       children: [
                         CircleAvatar(
-  radius: 60,
-  backgroundColor: Colors.orange.shade100,
-  backgroundImage: _selectedMedia.isNotEmpty
-      ? FileImage(File(_selectedMedia.first.path))
-      : profileState.profileEntity?.profilePicture != null
-          ? NetworkImage(
-              'http://10.0.2.2:5050${profileState.profileEntity!.profilePicture!}', // ← Add base URL
-            )
-          : null,
-  child: _selectedMedia.isEmpty &&
-          profileState.profileEntity?.profilePicture == null
-      ? const Icon(
-          Icons.person,
-          size: 50,
-          color: Colors.orange,
-        )
-      : null,
-),
+                          radius: 60,
+                          backgroundColor: Colors.orange.shade100,
+                          backgroundImage: _selectedMedia.isNotEmpty
+                              ? FileImage(File(_selectedMedia.first.path))
+                              : profileState.profileEntity?.profilePicture !=
+                                    null
+                              ? NetworkImage(
+                                  'http://10.0.2.2:5050${profileState.profileEntity!.profilePicture!}', // ← Add base URL
+                                )
+                              : null,
+                          child:
+                              _selectedMedia.isEmpty &&
+                                  profileState.profileEntity?.profilePicture ==
+                                      null
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 50,
+                                  color: Colors.orange,
+                                )
+                              : null,
+                        ),
                         Positioned(
                           bottom: 0,
                           right: 0,
