@@ -45,37 +45,44 @@ class ProfileViewModel extends Notifier<ProfileState> {
   }
 
   Future<void> updateProfile({
-    required String fullName,
-    required String email,
-    File? imageFile,
-  }) async {
-    state = state.copyWith(status: ProfileStatus.loading);
-    
-    final params = UpdateProfileUsecaseParam(
-      fullName: fullName,
-      email: email,
-      imageFile: imageFile,
-    );
-    
-    final result = await _updateProfileUsecase.call(params);
-    
-    result.fold(
-      (failure) {
+  required String fullName,
+  required String email,
+  File? imageFile,
+}) async {
+  state = state.copyWith(status: ProfileStatus.loading);
+  
+  final params = UpdateProfileUsecaseParam(
+    fullName: fullName,
+    email: email,
+    imageFile: imageFile,
+  );
+  
+  final result = await _updateProfileUsecase.call(params);
+  
+  result.fold(
+    (failure) {
+      state = state.copyWith(
+        status: ProfileStatus.error,
+        errorMessage: failure.toString(),
+      );
+    },
+    (isUpdated) async {
+      if (isUpdated) {
+        // Set updated status first so snackbar can show
+        state = state.copyWith(status: ProfileStatus.updated);
+        
+        // Wait a bit for the snackbar to appear
+        await Future.delayed(const Duration(milliseconds: 100));
+        
+        // Then refresh profile
+        await getProfile();
+      } else {
         state = state.copyWith(
           status: ProfileStatus.error,
-          errorMessage: failure.toString(),
+          errorMessage: "Update failed",
         );
-      },
-      (isUpdated) {
-        if (isUpdated) {
-          getProfile();
-        } else {
-          state = state.copyWith(
-            status: ProfileStatus.error,
-            errorMessage: "Update failed",
-          );
-        }
-      },
-    );
-  }
+      }
+    },
+  );
+}
 }
