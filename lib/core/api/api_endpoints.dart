@@ -43,4 +43,8 @@ class ApiEndpoints {
   // ================= Profile Endpoints =================
   static const String whoami = 'auth/whoami';
   static const String updateProfile = 'auth/update-profile';
+
+  // ================= Provider Endpoints =================
+  static const String getAllProviders = 'provider';            // GET /api/provider?page=1&size=12&categoryId=...
+  static const String getProviderById = 'provider';           // GET /api/provider/:id
 }
