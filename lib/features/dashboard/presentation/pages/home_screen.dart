@@ -148,8 +148,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 color: Colors.orange,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.home_repair_service,
-                  color: Colors.white, size: 20),
+              child: const Icon(
+                Icons.home_repair_service,
+                color: Colors.white,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -160,22 +163,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(_greetingIcon(),
-                          size: 13, color: _greetingIconColor()),
+                      Icon(
+                        _greetingIcon(),
+                        size: 13,
+                        color: _greetingIconColor(),
+                      ),
                       const SizedBox(width: 4),
-                      Text(_greeting(),
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey[500],
-                              fontWeight: FontWeight.w400)),
+                      Text(
+                        _greeting(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[500],
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 1),
-                  Text(firstName,
-                      style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87)),
+                  Text(
+                    firstName,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -190,8 +202,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onTap: () {},
                     child: const Padding(
                       padding: EdgeInsets.all(10),
-                      child: Icon(Icons.notifications_outlined,
-                          color: Colors.black87, size: 22),
+                      child: Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.black87,
+                        size: 22,
+                      ),
                     ),
                   ),
                 ),
@@ -272,7 +287,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Text(
                   'Trusted professionals, just a tap away.',
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.8), fontSize: 13),
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 13,
+                  ),
                 ),
                 const SizedBox(height: 22),
                 Container(
@@ -290,8 +307,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Row(
                     children: [
                       const SizedBox(width: 16),
-                      Icon(Icons.search,
-                          color: Colors.grey.shade400, size: 20),
+                      Icon(Icons.search, color: Colors.grey.shade400, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
@@ -299,22 +315,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           decoration: InputDecoration(
                             hintText: 'Search for a service...',
                             hintStyle: TextStyle(
-                                color: Colors.grey.shade400, fontSize: 14),
+                              color: Colors.grey.shade400,
+                              fontSize: 14,
+                            ),
                             border: InputBorder.none,
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 14),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
                           ),
                         ),
                       ),
                       Padding(
-  padding: const EdgeInsets.all(5),
-  child: PrimaryButton(
-    label: 'Search',
-    onTap: () {},
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    borderRadius: 24,
-  ),
-),
+                        padding: const EdgeInsets.all(5),
+                        child: PrimaryButton(
+                          label: 'Search',
+                          onTap: () {},
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          borderRadius: 24,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -334,15 +356,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-              color: Color(0x0D000000), blurRadius: 8, offset: Offset(0, 2)),
+            color: Color(0x0D000000),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,29 +374,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text('Browse Categories',
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87)),
+                    Text(
+                      'Browse Categories',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
                     SizedBox(height: 3),
-                    Text('What do you need help with?',
-                        style:
-                            TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(
+                      'What do you need help with?',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                   ],
                 ),
                 GestureDetector(
                   onTap: () {},
                   child: Row(
                     children: const [
-                      Text('See all',
-                          style: TextStyle(
-                              color: Colors.orange,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500)),
+                      Text(
+                        'See all',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       SizedBox(width: 2),
-                      Icon(Icons.arrow_forward,
-                          size: 13, color: Colors.orange),
+                      Icon(Icons.arrow_forward, size: 13, color: Colors.orange),
                     ],
                   ),
                 ),
@@ -383,8 +413,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             height: 105,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding:
-                  const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 final cat = categories[index];
@@ -409,15 +438,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _SectionHeader(
           title: 'Top Providers',
           subtitle: 'Verified professionals near you',
-          onSeeAll: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const ProvidersScreen())),
+          onSeeAll: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ProvidersScreen()),
+          ),
         ),
         const SizedBox(height: 14),
         if (state.status == ProviderStatus.loading)
           const SizedBox(
             height: 220,
-            child:
-                Center(child: CircularProgressIndicator(color: Colors.orange)),
+            child: Center(
+              child: CircularProgressIndicator(color: Colors.orange),
+            ),
           )
         else if (state.providers.isEmpty)
           const SizedBox(
@@ -432,8 +464,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(left: 16, right: 8),
               physics: const BouncingScrollPhysics(),
-              itemCount:
-                  state.providers.length > 6 ? 6 : state.providers.length,
+              itemCount: state.providers.length > 6
+                  ? 6
+                  : state.providers.length,
               itemBuilder: (context, index) {
                 final provider = state.providers[index];
                 return SizedBox(
@@ -495,8 +528,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      ProviderDetailScreen(providerId: provider.id),
+                  builder: (_) => ProviderDetailScreen(providerId: provider.id),
                 ),
               ),
             );
@@ -506,12 +538,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Center(
-                child: CircularProgressIndicator(color: Colors.orange)),
+              child: CircularProgressIndicator(color: Colors.orange),
+            ),
           ),
         if (!isLoadingMore && !state.hasMore && providers.isNotEmpty)
           Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
             child: Row(
               children: [
                 Expanded(child: Divider(color: Colors.grey.shade300)),
@@ -519,8 +551,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
                     'All ${state.total} providers loaded',
-                    style:
-                        TextStyle(color: Colors.grey[400], fontSize: 11),
+                    style: TextStyle(color: Colors.grey[400], fontSize: 11),
                   ),
                 ),
                 Expanded(child: Divider(color: Colors.grey.shade300)),
@@ -556,15 +587,19 @@ class _SectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.grey)),
+                Text(
+                  subtitle,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
               ],
             ),
           ),
@@ -573,21 +608,29 @@ class _SectionHeader extends StatelessWidget {
               onTap: onSeeAll,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 6),
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   children: const [
-                    Text('See all',
-                        style: TextStyle(
-                            color: Colors.orange,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600)),
+                    Text(
+                      'See all',
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     SizedBox(width: 3),
-                    Icon(Icons.arrow_forward_ios_rounded,
-                        size: 10, color: Colors.orange),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 10,
+                      color: Colors.orange,
+                    ),
                   ],
                 ),
               ),
@@ -640,11 +683,14 @@ class _CategoryChip extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            Text(title,
-                style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87)),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
           ],
         ),
       ),
