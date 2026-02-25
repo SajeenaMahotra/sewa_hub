@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/widgets/bottom_action_card.dart';
 import 'package:sewa_hub/core/widgets/button_outline.dart';
 import 'package:sewa_hub/core/widgets/primary_button.dart';
 import 'package:sewa_hub/features/provider/domain/entities/provider_entity.dart';
@@ -389,44 +390,7 @@ class _ProviderDetailScreenState extends ConsumerState<ProviderDetailScreen> {
       ),
 
       // ── Bottom Bar ───────────────────────────────
-      Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0x12000000),
-              blurRadius: 24,
-              offset: Offset(0, -6),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-        child: Row(
-          children: [
-            Expanded(
-              child: ButtonOutline(
-                text: 'Message',
-                onPressed: () {},
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: SizedBox(
-                height: 50,
-                child: PrimaryButton(
-                  label: 'Book now',
-                  onTap: () {},
-                  borderRadius: 15,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  padding: EdgeInsets.zero,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      BottomActionCard(onMessageTap: (){}, onBookTap: (){})
     ],
   );
 }

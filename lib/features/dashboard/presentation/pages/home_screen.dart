@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/widgets/dotted_background.dart';
 import 'package:sewa_hub/core/widgets/primary_button.dart';
 import 'package:sewa_hub/core/widgets/provider_card.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
@@ -81,52 +82,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final fullName = sessionService.userFullName ?? 'there';
     final firstName = fullName.trim().split(' ').first;
 
+    // ── Global responsive helpers ──────────────────────────────────────────
+    final mq = MediaQuery.of(context);
+    final screenWidth = mq.size.width;
+    // Scale factor: 375 baseline (small phone). Clamp so tablets don't go wild.
+    final sf = (screenWidth / 375).clamp(0.9, 1.5);
+    // Top-bar height grows with status bar
+    final topBarHeight = mq.padding.top + 64.0 * sf;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).padding.top + 72),
-                _buildHeroSection(firstName),
-                _buildCategoriesSection(),
-
-                const SizedBox(height: 28),
-
-                // ── Top Providers ────────────────────────────
-                _buildTopProvidersPreview(providerState),
-
-                const SizedBox(height: 28),
-
-                // ── All Providers ────────────────────────────
-                _buildAllProvidersGrid(providerState),
-
-                const SizedBox(height: 30),
-              ],
+      body: DottedBackground(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: topBarHeight),
+                  _buildHeroSection(sf),
+                  _buildCategoriesSection(sf),
+                  SizedBox(height: 24 * sf),
+                  _buildTopProvidersPreview(providerState, sf, screenWidth),
+                  SizedBox(height: 24 * sf),
+                  _buildAllProvidersGrid(providerState, sf, screenWidth),
+                  SizedBox(height: 30 * sf),
+                ],
+              ),
             ),
-          ),
-          _buildTopBar(firstName),
-        ],
+            _buildTopBar(firstName, sf, topBarHeight),
+          ],
+        ),
       ),
     );
   }
 
-  // ── Fixed Top Bar (unchanged) ─────────────────────────────────────────────
+  // ── Fixed Top Bar ─────────────────────────────────────────────────────────
 
-  Widget _buildTopBar(String firstName) {
+  Widget _buildTopBar(String firstName, double sf, double topBarHeight) {
+    final mq = MediaQuery.of(context);
     return Positioned(
       top: 0,
       left: 0,
       right: 0,
       child: Container(
+        height: topBarHeight,
         padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top + 12,
-          left: 20,
-          right: 16,
-          bottom: 14,
+          top: mq.padding.top + 10 * sf,
+          left: 20 * sf,
+          right: 16 * sf,
+          bottom: 10 * sf,
         ),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -141,49 +146,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Logo box
             Container(
-              width: 38,
-              height: 38,
+              width: 36 * sf,
+              height: 36 * sf,
               decoration: BoxDecoration(
                 color: Colors.orange,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10 * sf),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.home_repair_service,
                 color: Colors.white,
-                size: 20,
+                size: 18 * sf,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12 * sf),
+            // Greeting + name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         _greetingIcon(),
-                        size: 13,
+                        size: 12 * sf,
                         color: _greetingIconColor(),
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4 * sf),
                       Text(
                         _greeting(),
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 11 * sf,
                           color: Colors.grey[500],
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 1),
+                  SizedBox(height: 1 * sf),
                   Text(
                     firstName,
-                    style: const TextStyle(
-                      fontSize: 17,
+                    style: TextStyle(
+                      fontSize: 16 * sf,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
@@ -191,6 +198,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ),
+            // Notification bell
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -200,12 +208,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () {},
-                    child: const Padding(
-                      padding: EdgeInsets.all(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(9 * sf),
                       child: Icon(
                         Icons.notifications_outlined,
                         color: Colors.black87,
-                        size: 22,
+                        size: 20 * sf,
                       ),
                     ),
                   ),
@@ -214,8 +222,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   top: 2,
                   right: 2,
                   child: Container(
-                    width: 9,
-                    height: 9,
+                    width: 8 * sf,
+                    height: 8 * sf,
                     decoration: BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
@@ -231,9 +239,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Hero Section (unchanged) ──────────────────────────────────────────────
+  // ── Hero Section ──────────────────────────────────────────────────────────
 
-  Widget _buildHeroSection(String firstName) {
+  Widget _buildHeroSection(double sf) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -245,12 +253,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       child: Stack(
         children: [
+          // Decorative circles — scale with sf
           Positioned(
-            top: -50,
-            right: -50,
+            top: -50 * sf,
+            right: -50 * sf,
             child: Container(
-              width: 220,
-              height: 220,
+              width: 200 * sf,
+              height: 200 * sf,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withOpacity(0.07),
@@ -258,11 +267,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           Positioned(
-            bottom: -30,
-            right: 40,
+            bottom: -30 * sf,
+            right: 40 * sf,
             child: Container(
-              width: 130,
-              height: 130,
+              width: 120 * sf,
+              height: 120 * sf,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withOpacity(0.05),
@@ -270,28 +279,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
+            padding: EdgeInsets.fromLTRB(
+                20 * sf, 24 * sf, 20 * sf, 28 * sf),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'What service do\nyou need today?',
                   style: TextStyle(
-                    fontSize: 26,
+                    fontSize: 24 * sf,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6 * sf),
                 Text(
                   'Trusted professionals, just a tap away.',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
-                    fontSize: 13,
+                    fontSize: 12.5 * sf,
                   ),
                 ),
-                const SizedBox(height: 22),
+                SizedBox(height: 20 * sf),
+                // Search bar
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -306,33 +317,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   child: Row(
                     children: [
-                      const SizedBox(width: 16),
-                      Icon(Icons.search, color: Colors.grey.shade400, size: 20),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 14 * sf),
+                      Icon(Icons.search,
+                          color: Colors.grey.shade400, size: 18 * sf),
+                      SizedBox(width: 8 * sf),
                       Expanded(
                         child: TextField(
                           controller: _searchController,
+                          style: TextStyle(fontSize: 13 * sf),
                           decoration: InputDecoration(
                             hintText: 'Search for a service...',
                             hintStyle: TextStyle(
                               color: Colors.grey.shade400,
-                              fontSize: 14,
+                              fontSize: 13 * sf,
                             ),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 14,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 12 * sf,
                             ),
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(5),
+                        padding: EdgeInsets.all(5 * sf),
                         child: PrimaryButton(
                           label: 'Search',
                           onTap: () {},
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 18 * sf,
+                            vertical: 11 * sf,
                           ),
                           borderRadius: 24,
                         ),
@@ -348,9 +361,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Browse Categories (unchanged) ─────────────────────────────────────────
+  // ── Browse Categories ─────────────────────────────────────────────────────
 
-  Widget _buildCategoriesSection() {
+  Widget _buildCategoriesSection(double sf) {
+    // Category chip height scales with sf
+    final chipListHeight = 96.0 * sf;
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -366,43 +382,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: EdgeInsets.symmetric(
+                horizontal: 20 * sf, vertical: 18 * sf),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Browse Categories',
                       style: TextStyle(
-                        fontSize: 17,
+                        fontSize: 16 * sf,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height: 3),
+                    SizedBox(height: 3 * sf),
                     Text(
                       'What do you need help with?',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(
+                          fontSize: 11.5 * sf, color: Colors.grey),
                     ),
                   ],
                 ),
                 GestureDetector(
                   onTap: () {},
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         'See all',
                         style: TextStyle(
                           color: Colors.orange,
-                          fontSize: 13,
+                          fontSize: 12.5 * sf,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(width: 2),
-                      Icon(Icons.arrow_forward, size: 13, color: Colors.orange),
+                      SizedBox(width: 2 * sf),
+                      Icon(Icons.arrow_forward,
+                          size: 12 * sf, color: Colors.orange),
                     ],
                   ),
                 ),
@@ -410,16 +429,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           SizedBox(
-            height: 105,
+            height: chipListHeight,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 18),
+              padding: EdgeInsets.only(
+                  left: 14 * sf, right: 14 * sf, bottom: 16 * sf),
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 final cat = categories[index];
                 return _CategoryChip(
                   title: cat['title']!,
                   imagePath: cat['imagePath']!,
+                  sf: sf,
                 );
               },
             ),
@@ -429,57 +450,61 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Top Providers — REDESIGNED ────────────────────────────────────────────
+  // ── Top Providers ─────────────────────────────────────────────────────────
 
-  Widget _buildTopProvidersPreview(ProviderState state) {
+  Widget _buildTopProvidersPreview(
+      ProviderState state, double sf, double screenWidth) {
+    // Card width = ~52% of screen; height derived from aspect ratio
+    final cardWidth = screenWidth * 0.52;
+    final cardHeight = cardWidth * 1.05;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(
           title: 'Top Providers',
           subtitle: 'Verified professionals near you',
+          sf: sf,
           onSeeAll: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const ProvidersScreen()),
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 12 * sf),
         if (state.status == ProviderStatus.loading)
-          const SizedBox(
-            height: 220,
-            child: Center(
+          SizedBox(
+            height: cardHeight,
+            child: const Center(
               child: CircularProgressIndicator(color: Colors.orange),
             ),
           )
         else if (state.providers.isEmpty)
-          const SizedBox(
-            height: 80,
-            child: Center(child: Text('No providers available')),
+          SizedBox(
+            height: 80 * sf,
+            child: const Center(child: Text('No providers available')),
           )
         else
           SizedBox(
-            // Card is ~220px tall; 220 + padding fits cleanly
-            height: 220,
+            height: cardHeight,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 16, right: 8),
+              padding: EdgeInsets.only(left: 16 * sf, right: 8 * sf),
               physics: const BouncingScrollPhysics(),
-              itemCount: state.providers.length > 6
-                  ? 6
-                  : state.providers.length,
+              itemCount:
+                  state.providers.length > 6 ? 6 : state.providers.length,
               itemBuilder: (context, index) {
                 final provider = state.providers[index];
                 return SizedBox(
-                  width: 200,
+                  width: cardWidth,
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 12),
+                    padding: EdgeInsets.only(right: 12 * sf),
                     child: ProviderCard(
                       provider: provider,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              ProviderDetailScreen(providerId: provider.id),
+                          builder: (_) => ProviderDetailScreen(
+                              providerId: provider.id),
                         ),
                       ),
                     ),
@@ -492,14 +517,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── All Providers Grid — REDESIGNED ──────────────────────────────────────
+  // ── All Providers Grid ────────────────────────────────────────────────────
 
-  Widget _buildAllProvidersGrid(ProviderState state) {
+  Widget _buildAllProvidersGrid(
+      ProviderState state, double sf, double screenWidth) {
     final providers = state.providers;
     final isLoadingMore = state.status == ProviderStatus.loadingMore;
     final isLoading = state.status == ProviderStatus.loading;
 
     if (isLoading || providers.isEmpty) return const SizedBox.shrink();
+
+    // Responsive column count: 2 for phones, 3 for tablets (≥600px)
+    final crossAxisCount = screenWidth >= 600 ? 3 : 2;
+    // Aspect ratio: wider screens can afford a slightly taller card
+    final aspectRatio = screenWidth >= 600 ? 0.80 : 0.72;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -507,18 +538,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _SectionHeader(
           title: 'All Providers',
           subtitle: '${state.total} professionals available',
+          sf: sf,
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 12 * sf),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            // Aspect ratio tuned to the compact card height
-            childAspectRatio: 0.78,
+          padding: EdgeInsets.symmetric(horizontal: 16 * sf),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 12 * sf,
+            mainAxisSpacing: 12 * sf,
+            childAspectRatio: aspectRatio,
           ),
           itemCount: providers.length,
           itemBuilder: (context, index) {
@@ -528,30 +559,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ProviderDetailScreen(providerId: provider.id),
+                  builder: (_) =>
+                      ProviderDetailScreen(providerId: provider.id),
                 ),
               ),
             );
           },
         ),
         if (isLoadingMore)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Center(
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20 * sf),
+            child: const Center(
               child: CircularProgressIndicator(color: Colors.orange),
             ),
           ),
         if (!isLoadingMore && !state.hasMore && providers.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+            padding: EdgeInsets.symmetric(
+                vertical: 20 * sf, horizontal: 40 * sf),
             child: Row(
               children: [
                 Expanded(child: Divider(color: Colors.grey.shade300)),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 12 * sf),
                   child: Text(
                     'All ${state.total} providers loaded',
-                    style: TextStyle(color: Colors.grey[400], fontSize: 11),
+                    style: TextStyle(
+                        color: Colors.grey[400], fontSize: 11 * sf),
                   ),
                 ),
                 Expanded(child: Divider(color: Colors.grey.shade300)),
@@ -569,17 +603,19 @@ class _SectionHeader extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onSeeAll;
+  final double sf;
 
   const _SectionHeader({
     required this.title,
     required this.subtitle,
+    required this.sf,
     this.onSeeAll,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16 * sf),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -589,16 +625,17 @@ class _SectionHeader extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 17,
+                  style: TextStyle(
+                    fontSize: 16 * sf,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2 * sf),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style:
+                      TextStyle(fontSize: 11.5 * sf, color: Colors.grey),
                 ),
               ],
             ),
@@ -607,28 +644,28 @@ class _SectionHeader extends StatelessWidget {
             GestureDetector(
               onTap: onSeeAll,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 11 * sf,
+                  vertical: 6 * sf,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
-                  children: const [
+                  children: [
                     Text(
                       'See all',
                       style: TextStyle(
                         color: Colors.orange,
-                        fontSize: 12,
+                        fontSize: 11.5 * sf,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(width: 3),
+                    SizedBox(width: 3 * sf),
                     Icon(
                       Icons.arrow_forward_ios_rounded,
-                      size: 10,
+                      size: 9 * sf,
                       color: Colors.orange,
                     ),
                   ],
@@ -641,24 +678,30 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ── Category Chip (unchanged) ─────────────────────────────────────────────────
+// ── Category Chip ─────────────────────────────────────────────────────────────
 
 class _CategoryChip extends StatelessWidget {
   final String title;
   final String imagePath;
+  final double sf;
 
-  const _CategoryChip({required this.title, required this.imagePath});
+  const _CategoryChip({
+    required this.title,
+    required this.imagePath,
+    required this.sf,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        margin: EdgeInsets.only(right: 10 * sf),
+        padding: EdgeInsets.symmetric(
+            horizontal: 12 * sf, vertical: 8 * sf),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12 * sf),
           border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
@@ -674,19 +717,19 @@ class _CategoryChip extends StatelessWidget {
           children: [
             Image.asset(
               imagePath,
-              width: 32,
-              height: 32,
-              errorBuilder: (_, __, ___) => const Icon(
+              width: 30 * sf,
+              height: 30 * sf,
+              errorBuilder: (_, __, ___) => Icon(
                 Icons.miscellaneous_services,
-                size: 32,
+                size: 30 * sf,
                 color: Colors.orange,
               ),
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 4 * sf),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 10,
+              style: TextStyle(
+                fontSize: 9.5 * sf,
                 fontWeight: FontWeight.w500,
                 color: Colors.black87,
               ),

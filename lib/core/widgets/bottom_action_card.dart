@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'button2.dart';
-import 'button_outline.dart';
+import 'package:sewa_hub/core/widgets/button_outline.dart';
+import 'package:sewa_hub/core/widgets/primary_button.dart';
 
 class BottomActionCard extends StatelessWidget {
-  const BottomActionCard({super.key});
+  final VoidCallback onMessageTap;
+  final VoidCallback onBookTap;
+
+  const BottomActionCard({
+    super.key,
+    required this.onMessageTap,
+    required this.onBookTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +32,26 @@ class BottomActionCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: ButtonOutline(
-              text: 'Message',
-              onPressed: () {},
+            child: SizedBox(
+              height: 50,
+              child: ButtonOutline(
+                text: 'Message',
+                onPressed: onMessageTap,
+              ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Button2(
-              text: 'Book now',
-              onPressed: () {},
+            child: SizedBox(
+              height: 50,
+              child: PrimaryButton(
+                label: 'Book now',
+                onTap: onBookTap,
+                borderRadius: 15,
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                padding: EdgeInsets.zero,
+              ),
             ),
           ),
         ],

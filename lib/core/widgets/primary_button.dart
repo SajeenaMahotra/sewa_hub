@@ -35,36 +35,39 @@ class PrimaryButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(borderRadius),
-          boxShadow: [
-            BoxShadow(
-              color: gradientColors.first.withOpacity(0.35),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+  @override
+Widget build(BuildContext context) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: double.infinity,          // ← always fill horizontal space
+      padding: padding,
+      alignment: Alignment.center,     // ← center children
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-            letterSpacing: 0.2,
+        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: gradientColors.first.withOpacity(0.35),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
+        ],
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          letterSpacing: 0.2,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
