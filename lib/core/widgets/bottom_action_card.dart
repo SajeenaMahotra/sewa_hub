@@ -1,56 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/core/widgets/button_outline.dart';
-import 'package:sewa_hub/core/widgets/primary_button.dart';
 
 class BottomActionCard extends StatelessWidget {
-  final VoidCallback onMessageTap;
-  final VoidCallback onBookTap;
+  final VoidCallback? onMessageTap;
+  final VoidCallback? onBookTap;
 
   const BottomActionCard({
     super.key,
-    required this.onMessageTap,
-    required this.onBookTap,
+    this.onMessageTap,
+    this.onBookTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
             offset: const Offset(0, -4),
           ),
         ],
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
       ),
+      padding: EdgeInsets.fromLTRB(16, 14, 16, 14 + bottomPadding),
       child: Row(
         children: [
+          // ── Message (outline) button ──────────────────────────────────
           Expanded(
-            child: SizedBox(
-              height: 50,
-              child: ButtonOutline(
-                text: 'Message',
-                onPressed: onMessageTap,
+            child: GestureDetector(
+              onTap: onMessageTap,
+              child: Container(
+                height: 50,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFFFF6B35),
+                    width: 1.8,
+                  ),
+                ),
+                child: const Text(
+                  'Message',
+                  style: TextStyle(
+                    color: Color(0xFFFF6B35),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.1,
+                  ),
+                ),
               ),
             ),
           ),
+
           const SizedBox(width: 12),
+
+          // ── Book Now (filled gradient) button ─────────────────────────
           Expanded(
-            child: SizedBox(
-              height: 50,
-              child: PrimaryButton(
-                label: 'Book now',
-                onTap: onBookTap,
-                borderRadius: 15,
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                padding: EdgeInsets.zero,
+            flex: 2,
+            child: GestureDetector(
+              onTap: onBookTap,
+              child: Container(
+                height: 50,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFF6B35), Color(0xFFFF9A6C)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFF6B35).withOpacity(0.38),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: const Text(
+                  'Book now',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.1,
+                  ),
+                ),
               ),
             ),
           ),

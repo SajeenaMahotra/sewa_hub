@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/core/widgets/bottom_action_card.dart';
-import 'package:sewa_hub/core/widgets/button_outline.dart';
-import 'package:sewa_hub/core/widgets/primary_button.dart';
+import 'package:sewa_hub/core/widgets/dotted_background.dart';
 import 'package:sewa_hub/features/provider/domain/entities/provider_entity.dart';
 import 'package:sewa_hub/features/provider/presentation/state/provider_state.dart';
 import 'package:sewa_hub/features/provider/presentation/view_model/provider_view_model.dart';
@@ -53,7 +52,7 @@ class _ProviderDetailScreenState extends ConsumerState<ProviderDetailScreen> {
     final state = ref.watch(providerViewModelProvider);
 
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -77,20 +76,22 @@ class _ProviderDetailScreenState extends ConsumerState<ProviderDetailScreen> {
           child: Container(height: 1, color: _dividerColor),
         ),
       ),
-      body: () {
-        if (state.status == ProviderStatus.detailLoading) {
-          return const Center(
-              child: CircularProgressIndicator(color: _orange));
-        }
-        if (state.status == ProviderStatus.error) {
-          return Center(
-              child: Text(state.errorMessage ?? 'Something went wrong'));
-        }
-        if (state.selectedProvider != null) {
-          return _buildDetail(state.selectedProvider!);
-        }
-        return const SizedBox.shrink();
-      }(),
+      body: DottedBackground(
+        child: () {
+          if (state.status == ProviderStatus.detailLoading) {
+            return const Center(
+                child: CircularProgressIndicator(color: _orange));
+          }
+          if (state.status == ProviderStatus.error) {
+            return Center(
+                child: Text(state.errorMessage ?? 'Something went wrong'));
+          }
+          if (state.selectedProvider != null) {
+            return _buildDetail(state.selectedProvider!);
+          }
+          return const SizedBox.shrink();
+        }(),
+      ),
     );
   }
 

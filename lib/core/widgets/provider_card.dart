@@ -165,6 +165,7 @@ class _ProviderCardState extends State<ProviderCard>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // Price — always fully visible
                     RichText(
                       text: TextSpan(
                         children: [
@@ -172,13 +173,13 @@ class _ProviderCardState extends State<ProviderCard>
                             text: 'Rs. ${p.pricePerHour.toStringAsFixed(0)}',
                             style: const TextStyle(
                               color: Color(0xFFFF6B35),
-                              fontSize: 15,
+                              fontSize: 14,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -0.3,
                             ),
                           ),
                           const TextSpan(
-                            text: ' / hr',
+                            text: ' /hr',
                             style: TextStyle(
                               color: Color(0xFF94A3B8),
                               fontSize: 11,
@@ -189,10 +190,16 @@ class _ProviderCardState extends State<ProviderCard>
                       ),
                     ),
 
-                    // ── Reusable PrimaryButton ────────────────
-                    PrimaryButton(
-                      label: 'Book now',
-                      onTap: widget.onBookNow ?? widget.onTap,
+                    // Compact fixed-width button
+                    SizedBox(
+                      width: 84,
+                      child: PrimaryButton(
+                        label: 'Book now',
+                        onTap: widget.onBookNow ?? widget.onTap,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 10),
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
