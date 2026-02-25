@@ -1,9 +1,6 @@
-// lib/screens/home_screen.dart
-// ── ONLY the _buildTopProvidersPreview and _buildAllProvidersGrid methods
-//    are changed. Everything before categories is untouched.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/widgets/primary_button.dart';
 import 'package:sewa_hub/core/widgets/provider_card.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/provider/presentation/pages/provider_detail_screen.dart';
@@ -310,24 +307,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                          ),
-                          child: const Text('Search',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 13)),
-                        ),
-                      ),
+  padding: const EdgeInsets.all(5),
+  child: PrimaryButton(
+    label: 'Search',
+    onTap: () {},
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    borderRadius: 24,
+  ),
+),
                     ],
                   ),
                 ),

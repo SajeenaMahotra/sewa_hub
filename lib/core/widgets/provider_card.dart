@@ -1,13 +1,18 @@
-// lib/core/widgets/provider_card.dart
-
 import 'package:flutter/material.dart';
+import 'package:sewa_hub/core/widgets/primary_button.dart';
 import 'package:sewa_hub/features/provider/domain/entities/provider_entity.dart';
 
 class ProviderCard extends StatefulWidget {
   final ProviderEntity provider;
   final VoidCallback? onTap;
+  final VoidCallback? onBookNow;
 
-  const ProviderCard({super.key, required this.provider, this.onTap});
+  const ProviderCard({
+    super.key,
+    required this.provider,
+    this.onTap,
+    this.onBookNow,
+  });
 
   @override
   State<ProviderCard> createState() => _ProviderCardState();
@@ -67,6 +72,7 @@ class _ProviderCardState extends State<ProviderCard>
       child: ScaleTransition(
         scale: _scale,
         child: Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
@@ -84,85 +90,186 @@ class _ProviderCardState extends State<ProviderCard>
             ],
           ),
           child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Avatar row
-                      Row(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Avatar row ──────────────────────────────
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _Avatar(imageUrl: _imageUrl, initials: _initials),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _Avatar(imageUrl: _imageUrl, initials: _initials),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  p.user?.fullname ?? 'Unknown',
-                                  style: const TextStyle(
-                                    color: Color(0xFF0F172A),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: -0.2,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                if (p.category != null)
-                                  _CategoryPill(p.category!.categoryName),
-                              ],
+                          Text(
+                            p.user?.fullname ?? 'Unknown',
+                            style: const TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 3),
+                          if (p.category != null)
+                            _CategoryPill(p.category!.categoryName),
+                        ],
+                      ),
+                    ),
+                    if (hasRating) ...[
+                      const SizedBox(width: 4),
+                      _RatingBadge(rating: p.rating),
+                    ],
+                  ],
+                ),
+
+                const SizedBox(height: 14),
+
+                // ── Experience ───────────────────────────────
+                _StatTile(
+                  icon: Icons.work_history_outlined,
+                  iconColor: const Color(0xFFFF6B35),
+                  iconBg: const Color(0xFFFFF3EE),
+                  value: '${p.experienceYears} yrs',
+                  label: 'Experience',
+                  valueColor: const Color(0xFF0F172A),
+                ),
+
+                const SizedBox(height: 8),
+
+                // ── Rating row ───────────────────────────────
+                _StatTile(
+                  icon: Icons.star_rounded,
+                  iconColor: const Color(0xFFFFC107),
+                  iconBg: const Color(0xFFFFFBEB),
+                  value: hasRating
+                      ? p.rating.toStringAsFixed(1)
+                      : 'No ratings yet',
+                  label: 'Rating',
+                  valueColor: hasRating
+                      ? const Color(0xFF92400E)
+                      : const Color(0xFF94A3B8),
+                ),
+
+                const SizedBox(height: 16),
+
+                // ── Price + Book Now row ──────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Rs. ${p.pricePerHour.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              color: Color(0xFFFF6B35),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.3,
                             ),
                           ),
-                          if (hasRating) ...[
-                            const SizedBox(width: 4),
-                            _RatingBadge(rating: p.rating),
-                          ],
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-                      Container(height: 1, color: const Color(0xFFF1F5F9)),
-                      const SizedBox(height: 12),
-
-                      // Stats
-                      Row(
-                        children: [
-                          _StatItem(
-                            icon: Icons.work_history_outlined,
-                            value: '${p.experienceYears} yrs',
-                            label: 'Exp',
-                          ),
-                          Container(
-                            width: 1,
-                            height: 30,
-                            margin:
-                                const EdgeInsets.symmetric(horizontal: 8),
-                            color: const Color(0xFFE2E8F0),
-                          ),
-                          _StatItem(
-                            icon: Icons.payments_outlined,
-                            value:
-                                'NPR ${p.pricePerHour.toStringAsFixed(0)}',
-                            label: '/hr',
+                          const TextSpan(
+                            text: ' / hr',
+                            style: TextStyle(
+                              color: Color(0xFF94A3B8),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
+                    ),
 
-                      const SizedBox(height: 12),
-
-                      // Button
-                      _BookNowButton(onTap: widget.onTap),
-                    ],
-                  ),
+                    // ── Reusable PrimaryButton ────────────────
+                    PrimaryButton(
+                      label: 'Book now',
+                      onTap: widget.onBookNow ?? widget.onTap,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+// ── Stat Tile ─────────────────────────────────────────────────────────────────
+
+class _StatTile extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBg;
+  final String value;
+  final String label;
+  final Color valueColor;
+
+  const _StatTile({
+    required this.icon,
+    required this.iconColor,
+    required this.iconBg,
+    required this.value,
+    required this.label,
+    required this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: iconBg,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: iconColor, size: 13),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: valueColor,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.1,
+                ),
+              ),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Avatar ────────────────────────────────────────────────────────────────────
 
 class _Avatar extends StatelessWidget {
   final String imageUrl;
@@ -172,10 +279,10 @@ class _Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 46,
+      height: 46,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(13),
         color: const Color(0xFFF8FAFC),
       ),
       clipBehavior: Clip.antiAlias,
@@ -198,11 +305,13 @@ class _InitialsWidget extends StatelessWidget {
       child: Text(text,
           style: const TextStyle(
               color: Color(0xFFFF6B35),
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.w800)),
     );
   }
 }
+
+// ── Category Pill ─────────────────────────────────────────────────────────────
 
 class _CategoryPill extends StatelessWidget {
   final String label;
@@ -210,24 +319,20 @@ class _CategoryPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFF6B35).withOpacity(0.10),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-            color: const Color(0xFFFF6B35).withOpacity(0.25), width: 1),
+    return Text(
+      label,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        color: Color(0xFFE85A1A),
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
       ),
-      child: Text(label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-              color: Color(0xFFE85A1A),
-              fontSize: 10.5,
-              fontWeight: FontWeight.w600)),
     );
   }
 }
+
+// ── Rating Badge ──────────────────────────────────────────────────────────────
 
 class _RatingBadge extends StatelessWidget {
   final double rating;
@@ -236,7 +341,7 @@ class _RatingBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFBEB),
         borderRadius: BorderRadius.circular(8),
@@ -245,121 +350,14 @@ class _RatingBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star_rounded, color: Color(0xFFFFC107), size: 12),
+          const Icon(Icons.star_rounded, color: Color(0xFFFFC107), size: 11),
           const SizedBox(width: 2),
           Text(rating.toStringAsFixed(1),
               style: const TextStyle(
                   color: Color(0xFF92400E),
-                  fontSize: 11,
+                  fontSize: 10,
                   fontWeight: FontWeight.w700)),
         ],
-      ),
-    );
-  }
-}
-
-class _StatItem extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  const _StatItem(
-      {required this.icon, required this.value, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF3EE),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: const Color(0xFFFF6B35), size: 14),
-          ),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(value,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        color: Color(0xFF0F172A),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700)),
-                Text(label,
-                    style: const TextStyle(
-                        color: Color(0xFF94A3B8),
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w500)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BookNowButton extends StatefulWidget {
-  final VoidCallback? onTap;
-  const _BookNowButton({this.onTap});
-
-  @override
-  State<_BookNowButton> createState() => _BookNowButtonState();
-}
-
-class _BookNowButtonState extends State<_BookNowButton> {
-  bool _pressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) {
-        setState(() => _pressed = false);
-        widget.onTap?.call();
-      },
-      onTapCancel: () => setState(() => _pressed = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
-        height: 42,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: _pressed
-                ? [const Color(0xFFCC3D0A), const Color(0xFFB33200)]
-                : [const Color(0xFFFF6B35), const Color(0xFFE84A0E)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: _pressed
-              ? []
-              : [
-                  BoxShadow(
-                    color: const Color(0xFFFF6B35).withOpacity(0.30),
-                    blurRadius: 12,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text('Book Now',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3)),
-            SizedBox(width: 6),
-            Icon(Icons.north_east_rounded, color: Colors.white, size: 14),
-          ],
-        ),
       ),
     );
   }
