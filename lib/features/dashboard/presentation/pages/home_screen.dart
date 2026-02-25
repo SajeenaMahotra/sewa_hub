@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isTablet = screenWidth >= 600;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -210,9 +210,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),

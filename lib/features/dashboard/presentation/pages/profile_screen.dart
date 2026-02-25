@@ -15,7 +15,7 @@ class ProfileScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7), // soft neutral background
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         elevation: 0.5,
         backgroundColor: Colors.white,
