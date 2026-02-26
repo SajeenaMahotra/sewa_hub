@@ -6,21 +6,21 @@ import 'package:sewa_hub/features/booking/data/repositories/booking_repository.d
 import 'package:sewa_hub/features/booking/domain/entities/booking_entity.dart';
 import 'package:sewa_hub/features/booking/domain/repositories/booking_repository.dart';
 
-final getMyBookingsUsecaseProvider = Provider<GetMyBookingsUsecase>((ref) {
-  return GetMyBookingsUsecase(
+final cancelBookingUsecaseProvider = Provider<CancelBookingUsecase>((ref) {
+  return CancelBookingUsecase(
     repository: ref.watch(bookingRepositoryProvider),
   );
 });
 
-class GetMyBookingsUsecase
-    implements UsecaseWithoutParams<List<BookingEntity>> {
+class CancelBookingUsecase
+    implements UsecaseWithParams<BookingEntity, String> {
   final IBookingRepository _repository;
 
-  GetMyBookingsUsecase({required IBookingRepository repository})
+  CancelBookingUsecase({required IBookingRepository repository})
       : _repository = repository;
 
   @override
-  Future<Either<Failure, List<BookingEntity>>> call() {
-    return _repository.getMyBookings();
+  Future<Either<Failure, BookingEntity>> call(String bookingId) {
+    return _repository.cancelBooking(bookingId);
   }
 }
