@@ -47,4 +47,12 @@ class ApiEndpoints {
   // ================= Provider Endpoints =================
   static const String getAllProviders = 'provider';            // GET /api/provider?page=1&size=12&categoryId=...
   static const String getProviderById = 'provider';           // GET /api/provider/:id
+
+  // ================= Booking Endpoints =================
+  static const String createBooking = 'bookings';
+  static const String myBookings = 'bookings/mybooking';
+  static const String providerBookings = 'bookings/provider';
+  static String bookingStatus(String id) => 'bookings/$id/status';
+  static String cancelBooking(String id) => 'bookings/$id/cancel';
+  static String bookingById(String id) => 'bookings/$id';
 }
