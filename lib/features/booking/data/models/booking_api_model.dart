@@ -32,7 +32,6 @@ class BookingApiModel {
   });
 
   factory BookingApiModel.fromJson(Map<String, dynamic> json) {
-    // user_id can be either a string or populated object
     final userIdRaw = json['user_id'];
     final providerIdRaw = json['provider_id'];
 
@@ -55,6 +54,12 @@ class BookingApiModel {
       providerId = providerIdRaw?.toString() ?? '';
     }
 
+    final basePrice = (json['price_per_hour'] as num?)?.toDouble() ?? 0.0;
+
+    // effective_price_per_hour may be missing (older bookings) — fall back to base
+    final effectivePrice =
+        (json['effective_price_per_hour'] as num?)?.toDouble() ?? basePrice;
+
     return BookingApiModel(
       id: json['_id']?.toString(),
       userId: userId,
@@ -62,10 +67,9 @@ class BookingApiModel {
       scheduledAt: DateTime.parse(json['scheduled_at'] as String),
       address: json['address'] as String? ?? '',
       note: json['note'] as String?,
-      pricePerHour: (json['price_per_hour'] as num).toDouble(),
+      pricePerHour: basePrice,
       severity: json['severity'] as String? ?? 'normal',
-      effectivePricePerHour:
-          (json['effective_price_per_hour'] as num).toDouble(),
+      effectivePricePerHour: effectivePrice,
       status: json['status'] as String? ?? 'pending',
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'] as String)

@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/core/api/api_client.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/error/failures.dart';
 import 'package:sewa_hub/features/booking/data/models/booking_api_model.dart';
 
@@ -24,7 +25,7 @@ class BookingRemoteDataSource {
     String severity = 'normal',
   }) async {
     try {
-      final response = await _apiClient.post('/bookings', data: {
+      final response = await _apiClient.post(ApiEndpoints.createBooking, data: {
         'provider_id': providerId,
         'scheduled_at': scheduledAt.toIso8601String(),
         'address': address,
@@ -48,8 +49,10 @@ class BookingRemoteDataSource {
     int size = 10,
   }) async {
     try {
-      final response = await _apiClient
-          .get('/bookings/mybooking?page=$page&size=$size');
+      final response = await _apiClient.get(
+        ApiEndpoints.myBookings,
+        queryParameters: {'page': page, 'size': size},
+      );
 
       if (response.data['success'] == true) {
         final bookings = (response.data['data']['bookings'] as List)
@@ -69,8 +72,10 @@ class BookingRemoteDataSource {
     int size = 10,
   }) async {
     try {
-      final response = await _apiClient
-          .get('/bookings/provider?page=$page&size=$size');
+      final response = await _apiClient.get(
+        ApiEndpoints.providerBookings,
+        queryParameters: {'page': page, 'size': size},
+      );
 
       if (response.data['success'] == true) {
         final bookings = (response.data['data']['bookings'] as List)
@@ -91,7 +96,7 @@ class BookingRemoteDataSource {
   }) async {
     try {
       final response = await _apiClient.patch(
-        '/bookings/$bookingId/status',
+        ApiEndpoints.bookingStatus(bookingId),
         data: {'status': status},
       );
 
@@ -110,7 +115,7 @@ class BookingRemoteDataSource {
       String bookingId) async {
     try {
       final response =
-          await _apiClient.patch('/bookings/$bookingId/cancel');
+          await _apiClient.patch(ApiEndpoints.cancelBooking(bookingId));
 
       if (response.data['success'] == true) {
         final data = response.data['data'] as Map<String, dynamic>;
@@ -126,7 +131,8 @@ class BookingRemoteDataSource {
   Future<Either<Failure, BookingApiModel>> getBookingById(
       String bookingId) async {
     try {
-      final response = await _apiClient.get('/bookings/$bookingId');
+      final response =
+          await _apiClient.get(ApiEndpoints.bookingById(bookingId));
 
       if (response.data['success'] == true) {
         final data = response.data['data'] as Map<String, dynamic>;

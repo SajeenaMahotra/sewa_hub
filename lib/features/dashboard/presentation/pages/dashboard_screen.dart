@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sewa_hub/features/dashboard/presentation/pages/booking_screen.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/my_booking_page.dart';
 import 'package:sewa_hub/features/dashboard/presentation/pages/chat_screen.dart';
 import 'package:sewa_hub/features/dashboard/presentation/pages/home_screen.dart';
 import 'package:sewa_hub/features/dashboard/presentation/pages/profile_screen.dart';
@@ -17,7 +17,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const BookingScreen(),
+    const MyBookingsPage(),
     const ChatScreen(),
     const ProfileScreen(),
   ];

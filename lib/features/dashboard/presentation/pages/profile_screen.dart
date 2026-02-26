@@ -97,11 +97,6 @@ class ProfileScreen extends ConsumerWidget {
               onTap: () {},
             ),
             _menuItem(
-              icon: Icons.credit_card_outlined,
-              label: "Payment Activity",
-              onTap: () {},
-            ),
-            _menuItem(
               icon: Icons.info_outline,
               label: "About App",
               onTap: () {},
