@@ -8,6 +8,8 @@ import 'package:sewa_hub/features/provider/presentation/pages/provider_detail_sc
 import 'package:sewa_hub/features/provider/presentation/pages/providers_screen.dart';
 import 'package:sewa_hub/features/provider/presentation/view_model/provider_view_model.dart';
 import 'package:sewa_hub/features/provider/presentation/state/provider_state.dart';
+import 'package:sewa_hub/features/notification/presentation/widgets/notification_bell.dart';
+import 'package:sewa_hub/features/notification/presentation/view_model/notification_view_model.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -36,6 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(providerViewModelProvider.notifier).loadProviders(reset: true);
+      ref.read(notificationViewModelProvider.notifier).fetchNotifications();
     });
     _scrollController.addListener(_onScroll);
   }
@@ -192,26 +195,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ),
-            Material(
-              color: Colors.grey.shade100,
-              shape: const CircleBorder(),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () {},
-                child: Padding(
-                  padding: EdgeInsets.all(9 * sf),
-                  child: Icon(Icons.notifications_outlined,
-                      color: Colors.black87, size: 20 * sf),
-                ),
-              ),
-            ),
+            NotificationBell(sf: sf),
           ],
         ),
       ),
     );
   }
 
-  // ── Hero Section ──────────────────────────────────────────────────────────
+  //  Hero Section 
   Widget _buildHeroSection(double sf) {
     return Container(
       width: double.infinity,
@@ -333,7 +324,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Browse Categories ─────────────────────────────────────────────────────
+  //  Browse Categories 
   Widget _buildCategoriesSection(double sf) {
     final chipListHeight = 96.0 * sf;
 

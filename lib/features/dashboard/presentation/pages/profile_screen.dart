@@ -38,7 +38,7 @@ class ProfileScreen extends ConsumerWidget {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              // ── Orange gradient header ───────────────────────────────────
+              //  Orange gradient header
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
@@ -145,7 +145,7 @@ class ProfileScreen extends ConsumerWidget {
 
               const SizedBox(height: 28),
 
-              // ── Menu sections ────────────────────────────────────────────
+              //  Menu sections 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
