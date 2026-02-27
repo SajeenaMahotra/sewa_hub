@@ -21,14 +21,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
 
   static const List<Map<String, String>> categories = [
-    {'title': 'Cleaning', 'imagePath': 'assets/icons/cleaning.png'},
-    {'title': 'Plumbing', 'imagePath': 'assets/icons/plumbing.png'},
-    {'title': 'Electrician', 'imagePath': 'assets/icons/electrician.png'},
-    {'title': 'Carpenter', 'imagePath': 'assets/icons/carpenter.png'},
-    {'title': 'AC Repair', 'imagePath': 'assets/icons/acrepair.png'},
-    {'title': 'Painter', 'imagePath': 'assets/icons/paintroller.png'},
-    {'title': 'Gardening', 'imagePath': 'assets/icons/gardening.png'},
-    {'title': 'Laundry', 'imagePath': 'assets/icons/laundry.png'},
+    {'title': 'Cleaning',     'imagePath': 'assets/icons/cleaning.png'},
+    {'title': 'Plumbing',     'imagePath': 'assets/icons/plumbing.png'},
+    {'title': 'Electrician',  'imagePath': 'assets/icons/electrician.png'},
+    {'title': 'Carpenter',    'imagePath': 'assets/icons/carpenter.png'},
+    {'title': 'AC Repair',    'imagePath': 'assets/icons/acrepair.png'},
+    {'title': 'Painter',      'imagePath': 'assets/icons/paintroller.png'},
+    {'title': 'Gardening',    'imagePath': 'assets/icons/gardening.png'},
+    {'title': 'Laundry',      'imagePath': 'assets/icons/laundry.png'},
   ];
 
   @override
@@ -52,6 +52,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  // Navigate to ProvidersScreen with a pre-filled search query
+  void _searchProviders() {
+    final query = _searchController.text.trim();
+    if (query.isEmpty) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProvidersScreen(initialSearch: query),
+      ),
+    );
+  }
+
+  // Navigate to ProvidersScreen with a pre-selected category
+  void _browseCategory(String category) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProvidersScreen(initialCategory: category),
+      ),
+    );
   }
 
   String _greeting() {
@@ -80,13 +102,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final providerState = ref.watch(providerViewModelProvider);
     final sessionService = ref.read(userSessionServiceProvider);
     final fullName = sessionService.userFullName ?? 'there';
-   
-    // ── Global responsive helpers ──────────────────────────────────────────
+
     final mq = MediaQuery.of(context);
     final screenWidth = mq.size.width;
-    // Scale factor: 375 baseline (small phone). Clamp so tablets don't go wild.
     final sf = (screenWidth / 375).clamp(0.9, 1.5);
-    // Top-bar height grows with status bar
     final topBarHeight = mq.padding.top + 64.0 * sf;
 
     return Scaffold(
@@ -116,7 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  //  Fixed Top Bar 
+  // ── Fixed Top Bar ─────────────────────────────────────────────────────────
   Widget _buildTopBar(String fullName, double sf, double topBarHeight) {
     final mq = MediaQuery.of(context);
     return Positioned(
@@ -144,7 +163,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Greeting + full name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,35 +171,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        _greetingIcon(),
-                        size: 12 * sf,
-                        color: _greetingIconColor(),
-                      ),
+                      Icon(_greetingIcon(),
+                          size: 12 * sf, color: _greetingIconColor()),
                       SizedBox(width: 4 * sf),
-                      Text(
-                        _greeting(),
-                        style: TextStyle(
-                          fontSize: 11 * sf,
-                          color: Colors.grey[700],   
-                          fontWeight: FontWeight.w500, 
-                        ),
-                      ),
+                      Text(_greeting(),
+                          style: TextStyle(
+                            fontSize: 11 * sf,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          )),
                     ],
                   ),
                   SizedBox(height: 1 * sf),
-                  Text(
-                    fullName, 
-                    style: TextStyle(
-                      fontSize: 16 * sf,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
+                  Text(fullName,
+                      style: TextStyle(
+                        fontSize: 16 * sf,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      )),
                 ],
               ),
             ),
-            // Notification bell — no red dot, no Stack
             Material(
               color: Colors.grey.shade100,
               shape: const CircleBorder(),
@@ -190,11 +200,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () {},
                 child: Padding(
                   padding: EdgeInsets.all(9 * sf),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.black87,
-                    size: 20 * sf,
-                  ),
+                  child: Icon(Icons.notifications_outlined,
+                      color: Colors.black87, size: 20 * sf),
                 ),
               ),
             ),
@@ -204,8 +211,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  //  Hero Section 
-
+  // ── Hero Section ──────────────────────────────────────────────────────────
   Widget _buildHeroSection(double sf) {
     return Container(
       width: double.infinity,
@@ -218,7 +224,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       child: Stack(
         children: [
-          // Decorative circles — scale with sf
           Positioned(
             top: -50 * sf,
             right: -50 * sf,
@@ -267,7 +272,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 20 * sf),
-                // Search bar
+
+                // ── Search bar (now functional) ──────────────────────
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -290,6 +296,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: TextField(
                           controller: _searchController,
                           style: TextStyle(fontSize: 13 * sf),
+                          textInputAction: TextInputAction.search,
+                          onSubmitted: (_) => _searchProviders(),
                           decoration: InputDecoration(
                             hintText: 'Search for a service...',
                             hintStyle: TextStyle(
@@ -298,8 +306,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
-                              vertical: 12 * sf,
-                            ),
+                                vertical: 12 * sf),
                           ),
                         ),
                       ),
@@ -307,7 +314,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         padding: EdgeInsets.all(5 * sf),
                         child: PrimaryButton(
                           label: 'Search',
-                          onTap: () {},
+                          onTap: _searchProviders,
                           padding: EdgeInsets.symmetric(
                             horizontal: 18 * sf,
                             vertical: 11 * sf,
@@ -326,10 +333,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  //  Browse Categories
-
+  // ── Browse Categories ─────────────────────────────────────────────────────
   Widget _buildCategoriesSection(double sf) {
-    // Category chip height scales with sf
     final chipListHeight = 96.0 * sf;
 
     return Container(
@@ -337,10 +342,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
+              color: Color(0x0D000000),
+              blurRadius: 8,
+              offset: Offset(0, 2)),
         ],
       ),
       child: Column(
@@ -356,34 +360,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Browse Categories',
-                      style: TextStyle(
-                        fontSize: 16 * sf,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
+                    Text('Browse Categories',
+                        style: TextStyle(
+                          fontSize: 16 * sf,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        )),
                     SizedBox(height: 3 * sf),
-                    Text(
-                      'What do you need help with?',
-                      style: TextStyle(
-                          fontSize: 11.5 * sf, color: Colors.grey),
-                    ),
+                    Text('What do you need help with?',
+                        style: TextStyle(
+                            fontSize: 11.5 * sf, color: Colors.grey)),
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const ProvidersScreen()),
+                  ),
                   child: Row(
                     children: [
-                      Text(
-                        'See all',
-                        style: TextStyle(
-                          color: Colors.orange,
-                          fontSize: 12.5 * sf,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      Text('See all',
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontSize: 12.5 * sf,
+                            fontWeight: FontWeight.w500,
+                          )),
                       SizedBox(width: 2 * sf),
                       Icon(Icons.arrow_forward,
                           size: 12 * sf, color: Colors.orange),
@@ -406,6 +408,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   title: cat['title']!,
                   imagePath: cat['imagePath']!,
                   sf: sf,
+                  // ← now tappable with category filter
+                  onTap: () => _browseCategory(cat['title']!),
                 );
               },
             ),
@@ -415,11 +419,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  //  Top Providers 
-
+  // ── Top Providers Preview ─────────────────────────────────────────────────
   Widget _buildTopProvidersPreview(
       ProviderState state, double sf, double screenWidth) {
-    // Card width = ~52% of screen; height derived from aspect ratio
     final cardWidth = screenWidth * 0.52;
     final cardHeight = cardWidth * 1.05;
 
@@ -440,8 +442,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           SizedBox(
             height: cardHeight,
             child: const Center(
-              child: CircularProgressIndicator(color: Colors.orange),
-            ),
+                child: CircularProgressIndicator(color: Colors.orange)),
           )
         else if (state.providers.isEmpty)
           SizedBox(
@@ -482,8 +483,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  //  All Providers Grid 
-
+  // ── All Providers Grid ────────────────────────────────────────────────────
   Widget _buildAllProvidersGrid(
       ProviderState state, double sf, double screenWidth) {
     final providers = state.providers;
@@ -492,9 +492,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (isLoading || providers.isEmpty) return const SizedBox.shrink();
 
-    // Responsive column count: 2 for phones, 3 for tablets (≥600px)
     final crossAxisCount = screenWidth >= 600 ? 3 : 2;
-    // Aspect ratio: wider screens can afford a slightly taller card
     final aspectRatio = screenWidth >= 600 ? 0.80 : 0.72;
 
     return Column(
@@ -535,8 +533,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20 * sf),
             child: const Center(
-              child: CircularProgressIndicator(color: Colors.orange),
-            ),
+                child: CircularProgressIndicator(color: Colors.orange)),
           ),
         if (!isLoadingMore && !state.hasMore && providers.isNotEmpty)
           Padding(
@@ -562,8 +559,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-//  Shared Section Header 
-
+// ── Section Header ────────────────────────────────────────────────────────────
 class _SectionHeader extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -588,20 +584,16 @@ class _SectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16 * sf,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
+                Text(title,
+                    style: TextStyle(
+                      fontSize: 16 * sf,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    )),
                 SizedBox(height: 2 * sf),
-                Text(
-                  subtitle,
-                  style:
-                      TextStyle(fontSize: 11.5 * sf, color: Colors.grey),
-                ),
+                Text(subtitle,
+                    style: TextStyle(
+                        fontSize: 11.5 * sf, color: Colors.grey)),
               ],
             ),
           ),
@@ -610,29 +602,22 @@ class _SectionHeader extends StatelessWidget {
               onTap: onSeeAll,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 11 * sf,
-                  vertical: 6 * sf,
-                ),
+                    horizontal: 11 * sf, vertical: 6 * sf),
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'See all',
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 11.5 * sf,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Text('See all',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 11.5 * sf,
+                          fontWeight: FontWeight.w600,
+                        )),
                     SizedBox(width: 3 * sf),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 9 * sf,
-                      color: Colors.orange,
-                    ),
+                    Icon(Icons.arrow_forward_ios_rounded,
+                        size: 9 * sf, color: Colors.orange),
                   ],
                 ),
               ),
@@ -643,23 +628,24 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-//  Category Chip 
-
+// ── Category Chip ─────────────────────────────────────────────────────────────
 class _CategoryChip extends StatelessWidget {
   final String title;
   final String imagePath;
   final double sf;
+  final VoidCallback onTap; // ← now required
 
   const _CategoryChip({
     required this.title,
     required this.imagePath,
     required this.sf,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(right: 10 * sf),
         padding: EdgeInsets.symmetric(
@@ -691,14 +677,12 @@ class _CategoryChip extends StatelessWidget {
               ),
             ),
             SizedBox(height: 4 * sf),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 9.5 * sf,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-            ),
+            Text(title,
+                style: TextStyle(
+                  fontSize: 9.5 * sf,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                )),
           ],
         ),
       ),

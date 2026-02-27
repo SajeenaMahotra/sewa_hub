@@ -46,10 +46,24 @@ final _conversationsProvider =
 bool _isActive(String status) =>
     status == 'pending' || status == 'accepted';
 
-class ChatScreen extends ConsumerWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
 
+  @override
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends ConsumerState<ChatScreen> {
   static const _orange = Color(0xFFFF6B35);
+
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   String _providerName(BookingEntity b) {
     if (b.provider is Map) {
@@ -78,8 +92,17 @@ class ChatScreen extends ConsumerWidget {
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
 
+  List<_ChatConversation> _applySearch(List<_ChatConversation> conversations) {
+    if (_searchQuery.isEmpty) return conversations;
+    return conversations.where((c) {
+      final name = _providerName(c.booking).toLowerCase();
+      final address = c.booking.address.toLowerCase();
+      return name.contains(_searchQuery) || address.contains(_searchQuery);
+    }).toList();
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final conversationsAsync = ref.watch(_conversationsProvider);
 
     return Scaffold(
@@ -88,49 +111,88 @@ class ChatScreen extends ConsumerWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // AppBar
+              // ── AppBar ─────────────────────────────────────────────
               Container(
                 color: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 14),
-                child: Row(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+                child: Column(
                   children: [
-                    const Text(
-                      'Messages',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
-                      ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Messages',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                        const Spacer(),
+                        conversationsAsync.when(
+                          data: (c) => c.isNotEmpty
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFFF3EE),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text('${c.length}',
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: _orange)),
+                                )
+                              : const SizedBox.shrink(),
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
+                        ),
+                      ],
                     ),
-                    const Spacer(),
-                    conversationsAsync.when(
-                      data: (c) => c.isNotEmpty
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFF3EE),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                '${c.length}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: _orange,
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      loading: () => const SizedBox.shrink(),
-                      error: (_, __) => const SizedBox.shrink(),
+                    const SizedBox(height: 10),
+
+                    // Search bar
+                    Container(
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (v) =>
+                            setState(() => _searchQuery = v.toLowerCase()),
+                        style: const TextStyle(
+                            fontSize: 13, color: Color(0xFF0F172A)),
+                        decoration: InputDecoration(
+                          hintText: 'Search provider or address...',
+                          hintStyle: const TextStyle(
+                              fontSize: 13, color: Color(0xFF94A3B8)),
+                          prefixIcon: const Icon(Icons.search_rounded,
+                              size: 18, color: Color(0xFF94A3B8)),
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? GestureDetector(
+                                  onTap: () {
+                                    _searchController.clear();
+                                    setState(() => _searchQuery = '');
+                                  },
+                                  child: const Icon(Icons.close_rounded,
+                                      size: 16, color: Color(0xFF94A3B8)),
+                                )
+                              : null,
+                          border: InputBorder.none,
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 11),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
               const Divider(height: 1, color: Color(0xFFE2E8F0)),
 
+              // ── List ───────────────────────────────────────────────
               Expanded(
                 child: conversationsAsync.when(
                   loading: () => const Center(
@@ -143,7 +205,8 @@ class ChatScreen extends ConsumerWidget {
                             size: 48, color: Color(0xFFCBD5E1)),
                         const SizedBox(height: 12),
                         const Text('Failed to load conversations',
-                            style: TextStyle(color: Color(0xFF64748B))),
+                            style:
+                                TextStyle(color: Color(0xFF64748B))),
                         const SizedBox(height: 12),
                         TextButton(
                           onPressed: () =>
@@ -155,7 +218,40 @@ class ChatScreen extends ConsumerWidget {
                     ),
                   ),
                   data: (conversations) {
+                    final results = _applySearch(conversations);
+
                     if (conversations.isEmpty) return _buildEmptyState();
+
+                    if (results.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 72,
+                              height: 72,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF3EE),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Icon(Icons.search_off_rounded,
+                                  size: 36, color: _orange),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text('No results found',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF0F172A))),
+                            const SizedBox(height: 6),
+                            const Text('Try a different search',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF94A3B8))),
+                          ],
+                        ),
+                      );
+                    }
 
                     return RefreshIndicator(
                       color: _orange,
@@ -164,11 +260,11 @@ class ChatScreen extends ConsumerWidget {
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(
                             vertical: 16, horizontal: 16),
-                        itemCount: conversations.length,
+                        itemCount: results.length,
                         separatorBuilder: (_, __) =>
                             const SizedBox(height: 8),
                         itemBuilder: (context, index) {
-                          final conv = conversations[index];
+                          final conv = results[index];
                           final booking = conv.booking;
                           final name = _providerName(booking);
                           final isActive = _isActive(booking.status);
@@ -227,7 +323,7 @@ class ChatScreen extends ConsumerWidget {
                   color: Color(0xFF0F172A))),
           const SizedBox(height: 6),
           const Text('Messages with providers will\nappear here',
-              style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+              style: TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
               textAlign: TextAlign.center),
         ],
       ),
@@ -289,7 +385,6 @@ class _ConversationTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Avatar
             Stack(
               children: [
                 Container(
@@ -335,7 +430,6 @@ class _ConversationTile extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,7 +480,6 @@ class _ConversationTile extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(width: 8),
             if (!isActive)
               const Icon(Icons.lock_outline_rounded,
