@@ -29,33 +29,8 @@ class BottomActionCard extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(16, 14, 16, 14 + bottomPadding),
       child: Row(
         children: [
-          // ── Message (outline) button ──────────────────────────────────
-          Expanded(
-            child: GestureDetector(
-              onTap: onMessageTap,
-              child: Container(
-                height: 50,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: const Color(0xFFFF6B35),
-                    width: 1.8,
-                  ),
-                ),
-                child: const Text(
-                  'Message',
-                  style: TextStyle(
-                    color: Color(0xFFFF6B35),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.1,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          
+  
 
           const SizedBox(width: 12),
 
