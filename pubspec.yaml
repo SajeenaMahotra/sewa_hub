@@ -70,6 +70,10 @@ dependencies:
   mocktail: ^1.0.4
   intl: ^0.20.2
   socket_io_client: ^3.1.4
+  sensors_plus: ^7.0.0
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+  google_maps_flutter: ^2.14.2
   
 
 dev_dependencies:
