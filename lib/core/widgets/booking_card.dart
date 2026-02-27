@@ -3,15 +3,18 @@ import 'package:intl/intl.dart';
 import 'package:sewa_hub/features/booking/domain/entities/booking_entity.dart';
 import 'package:sewa_hub/features/booking/presentation/pages/booking_detail_page.dart';
 import 'package:sewa_hub/features/booking/presentation/widgets/booking_status_badge.dart';
+import 'package:sewa_hub/features/chat/presentation/pages/chat_page.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingEntity booking;
   final VoidCallback? onCancel;
+  final VoidCallback? onRate; // ← new
 
   const BookingCard({
     super.key,
     required this.booking,
     this.onCancel,
+    this.onRate,
   });
 
   static const _orange = Color(0xFFFF6B35);
@@ -40,10 +43,31 @@ class BookingCard extends StatelessWidget {
     return '';
   }
 
+  String get _bookingId => booking.id ?? '';
+
+  // Only active bookings can chat
+  bool get _canChat =>
+      booking.status == 'accepted' || booking.status == 'pending';
+
+  bool get _isCompleted => booking.status == 'completed';
+
   String _initials(String name) {
     final parts = name.trim().split(' ');
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
+  }
+
+  void _openChat(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChatPage(
+          bookingId: _bookingId,
+          providerName: _providerName,
+          providerImage: _providerImage,
+        ),
+      ),
+    );
   }
 
   @override
@@ -87,7 +111,7 @@ class BookingCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header: avatar + name + status + chevron
+                  // Header
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -105,35 +129,28 @@ class BookingCard extends StatelessWidget {
                                 _providerImage,
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => Center(
-                                  child: Text(
-                                    _initials(name),
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                        color: _orange),
-                                  ),
+                                  child: Text(_initials(name),
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w800,
+                                          color: _orange)),
                                 ),
                               )
                             : Center(
-                                child: Text(
-                                  _initials(name),
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w800,
-                                      color: _orange),
-                                ),
+                                child: Text(_initials(name),
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                        color: _orange)),
                               ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: _textPrimary,
-                          ),
-                        ),
+                        child: Text(name,
+                            style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: _textPrimary)),
                       ),
                       BookingStatusBadge(status: booking.status),
                       const SizedBox(width: 4),
@@ -144,7 +161,6 @@ class BookingCard extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Date & address
                   _InfoRow(
                     icon: Icons.calendar_today_outlined,
                     text: DateFormat('EEE, MMM d yyyy • h:mm a')
@@ -158,7 +174,7 @@ class BookingCard extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Price + severity + cancel
+                  // Bottom row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -169,39 +185,107 @@ class BookingCard extends StatelessWidget {
                           Text(
                             'NPR ${booking.effectivePricePerHour.toStringAsFixed(0)}/hr',
                             style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: _orange,
-                            ),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: _orange),
                           ),
                         ],
                       ),
-                      if (booking.status == 'pending' && onCancel != null)
-                        GestureDetector(
-                          onTap: onCancel,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0xFFEF4444), width: 1),
-                              borderRadius: BorderRadius.circular(8),
+
+                      Row(
+                        children: [
+                          // Message — only for active bookings
+                          if (_canChat)
+                            _ActionButton(
+                              icon: Icons.chat_bubble_outline_rounded,
+                              label: 'Message',
+                              color: _orange,
+                              bgColor: const Color(0xFFFFF3EE),
+                              borderColor: const Color(0xFFFFDDCC),
+                              onTap: () => _openChat(context),
                             ),
-                            child: const Text(
-                              'Cancel',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFFEF4444),
-                              ),
+
+                          // Rate — only for completed bookings
+                          if (_isCompleted) ...[
+                            _ActionButton(
+                              icon: Icons.star_outline_rounded,
+                              label: 'Rate',
+                              color: const Color(0xFFF59E0B),
+                              bgColor: const Color(0xFFFFFBEB),
+                              borderColor: const Color(0xFFFDE68A),
+                              onTap: onRate ?? () {},
                             ),
-                          ),
-                        ),
+                          ],
+
+                          if (_canChat &&
+                              booking.status == 'pending' &&
+                              onCancel != null)
+                            const SizedBox(width: 8),
+
+                          // Cancel
+                          if (booking.status == 'pending' && onCancel != null)
+                            _ActionButton(
+                              icon: null,
+                              label: 'Cancel',
+                              color: const Color(0xFFEF4444),
+                              bgColor: Colors.transparent,
+                              borderColor: const Color(0xFFEF4444),
+                              onTap: onCancel!,
+                            ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData? icon;
+  final String label;
+  final Color color;
+  final Color bgColor;
+  final Color borderColor;
+  final VoidCallback onTap;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.bgColor,
+    required this.borderColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: bgColor,
+          border: Border.all(color: borderColor),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 13, color: color),
+              const SizedBox(width: 4),
+            ],
+            Text(label,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: color)),
           ],
         ),
       ),
@@ -222,12 +306,10 @@ class _InfoRow extends StatelessWidget {
         Icon(icon, size: 14, color: const Color(0xFF94A3B8)),
         const SizedBox(width: 6),
         Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: Text(text,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
         ),
       ],
     );
@@ -240,12 +322,9 @@ class _SeverityChip extends StatelessWidget {
 
   Color get _color {
     switch (severity) {
-      case 'urgent':
-        return const Color(0xFFF59E0B);
-      case 'emergency':
-        return const Color(0xFFEF4444);
-      default:
-        return const Color(0xFF22C55E);
+      case 'urgent':    return const Color(0xFFEF4444);
+      case 'emergency': return const Color(0xFFF59E0B);
+      default:          return const Color(0xFF22C55E);
     }
   }
 
@@ -260,10 +339,7 @@ class _SeverityChip extends StatelessWidget {
       child: Text(
         severity[0].toUpperCase() + severity.substring(1),
         style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: _color,
-        ),
+            fontSize: 11, fontWeight: FontWeight.w600, color: _color),
       ),
     );
   }

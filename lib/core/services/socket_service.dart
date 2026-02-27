@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:sewa_hub/core/api/api_endpoints.dart';
-import 'package:sewa_hub/core/services/storage/token_service.dart'; 
+import 'package:sewa_hub/core/services/storage/token_service.dart';
 
 final socketServiceProvider = Provider<SocketService>((ref) {
-  final token = ref.watch(tokenServiceProvider).getToken(); 
-  return SocketService(token: token ?? '');
+  final token = ref.read(tokenServiceProvider).getToken() ?? '';
+  return SocketService(token: token);
 });
 
 class SocketService {
@@ -19,8 +19,8 @@ class SocketService {
   void connect() {
     if (isConnected) return;
 
-    // Strip /api/ from base URL for socket connection
-    final socketUrl = ApiEndpoints.baseUrl.replaceAll('/api/', '');
+    // Strip /api/ suffix — socket connects to root server URL
+    final socketUrl = ApiEndpoints.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
 
     _socket = IO.io(
       socketUrl,
@@ -34,17 +34,10 @@ class SocketService {
 
     _socket!.connect();
 
-    _socket!.onConnect((_) {
-      print('[Socket] Connected: ${_socket!.id}');
-    });
-
-    _socket!.onDisconnect((_) {
-      print('[Socket] Disconnected');
-    });
-
-    _socket!.onConnectError((err) {
-      print('[Socket] Connection error: $err');
-    });
+    _socket!.onConnect((_) => print('[Socket] ✅ Connected: ${_socket!.id}'));
+    _socket!.onDisconnect((_) => print('[Socket] Disconnected'));
+    _socket!.onConnectError((e) => print('[Socket] ❌ Connect error: $e'));
+    _socket!.on('new_message', (d) => print('[Socket] 📩 new_message raw: $d'));
   }
 
   void disconnect() {
@@ -52,62 +45,43 @@ class SocketService {
     _socket = null;
   }
 
-  //  Room 
+  void joinRoom(String bookingId) =>
+      _socket?.emit('join_room', {'bookingId': bookingId});
 
-  void joinRoom(String bookingId) {
-    _socket?.emit('join_room', {'bookingId': bookingId});
-  }
+  void leaveRoom(String bookingId) =>
+      _socket?.emit('leave_room', {'bookingId': bookingId});
 
-  void leaveRoom(String bookingId) {
-    _socket?.emit('leave_room', {'bookingId': bookingId});
-  }
+  void sendMessage(String bookingId, String content) =>
+      _socket?.emit('send_message', {'bookingId': bookingId, 'content': content});
 
-  //  Messaging 
-  void sendMessage(String bookingId, String content) {
-    _socket?.emit('send_message', {'bookingId': bookingId, 'content': content});
-  }
+  void markRead(String bookingId) =>
+      _socket?.emit('mark_read', {'bookingId': bookingId});
 
-  void markRead(String bookingId) {
-    _socket?.emit('mark_read', {'bookingId': bookingId});
-  }
+  void typingStart(String bookingId) =>
+      _socket?.emit('typing_start', {'bookingId': bookingId});
 
-  //  Typing 
+  void typingStop(String bookingId) =>
+      _socket?.emit('typing_stop', {'bookingId': bookingId});
 
-  void typingStart(String bookingId) {
-    _socket?.emit('typing_start', {'bookingId': bookingId});
-  }
+  // ── Listeners ─────────────────────────────────────────────────────────────
 
-  void typingStop(String bookingId) {
-    _socket?.emit('typing_stop', {'bookingId': bookingId});
-  }
+  void onNewMessage(void Function(dynamic) handler) =>
+      _socket?.on('new_message', handler);
 
-  //  Listeners
+  void onRoomJoined(void Function(dynamic) handler) =>
+      _socket?.on('room_joined', handler);
 
-  void onNewMessage(void Function(dynamic data) handler) {
-    _socket?.on('new_message', handler);
-  }
+  void onMessagesRead(void Function(dynamic) handler) =>
+      _socket?.on('messages_read', handler);
 
-  void onRoomJoined(void Function(dynamic data) handler) {
-    _socket?.on('room_joined', handler);
-  }
+  void onUserTyping(void Function(dynamic) handler) =>
+      _socket?.on('user_typing', handler);
 
-  void onMessagesRead(void Function(dynamic data) handler) {
-    _socket?.on('messages_read', handler);
-  }
+  void onUserStoppedTyping(void Function(dynamic) handler) =>
+      _socket?.on('user_stopped_typing', handler);
 
-  void onUserTyping(void Function(dynamic data) handler) {
-    _socket?.on('user_typing', handler);
-  }
+  void onError(void Function(dynamic) handler) =>
+      _socket?.on('error', handler);
 
-  void onUserStoppedTyping(void Function(dynamic data) handler) {
-    _socket?.on('user_stopped_typing', handler);
-  }
-
-  void onError(void Function(dynamic data) handler) {
-    _socket?.on('error', handler);
-  }
-
-  void off(String event) {
-    _socket?.off(event);
-  }
+  void off(String event) => _socket?.off(event);
 }
