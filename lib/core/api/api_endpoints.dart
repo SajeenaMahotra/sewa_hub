@@ -55,4 +55,10 @@ class ApiEndpoints {
   static String bookingStatus(String id) => 'bookings/$id/status';
   static String cancelBooking(String id) => 'bookings/$id/cancel';
   static String bookingById(String id) => 'bookings/$id';
+
+  // ================= Chat Endpoints =================
+static const String sendMessage = 'chat';                          // POST /api/chat
+static String getMessages(String bookingId) => 'chat/$bookingId'; // GET  /api/chat/:bookingId
+static String markAsRead(String bookingId) => 'chat/$bookingId/read';   // PATCH
+static String unreadCount(String bookingId) => 'chat/$bookingId/unread'; // GET
 }
