@@ -80,8 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final providerState = ref.watch(providerViewModelProvider);
     final sessionService = ref.read(userSessionServiceProvider);
     final fullName = sessionService.userFullName ?? 'there';
-    final firstName = fullName.trim().split(' ').first;
-
+   
     // ── Global responsive helpers ──────────────────────────────────────────
     final mq = MediaQuery.of(context);
     final screenWidth = mq.size.width;
@@ -110,16 +109,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ),
-            _buildTopBar(firstName, sf, topBarHeight),
+            _buildTopBar(fullName, sf, topBarHeight),
           ],
         ),
       ),
     );
   }
 
-  // ── Fixed Top Bar ─────────────────────────────────────────────────────────
-
-  Widget _buildTopBar(String firstName, double sf, double topBarHeight) {
+  //  Fixed Top Bar 
+  Widget _buildTopBar(String fullName, double sf, double topBarHeight) {
     final mq = MediaQuery.of(context);
     return Positioned(
       top: 0,
@@ -146,22 +144,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Logo box
-            Container(
-              width: 36 * sf,
-              height: 36 * sf,
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(10 * sf),
-              ),
-              child: Icon(
-                Icons.home_repair_service,
-                color: Colors.white,
-                size: 18 * sf,
-              ),
-            ),
-            SizedBox(width: 12 * sf),
-            // Greeting + name
+            // Greeting + full name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,15 +163,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         _greeting(),
                         style: TextStyle(
                           fontSize: 11 * sf,
-                          color: Colors.grey[500],
-                          fontWeight: FontWeight.w400,
+                          color: Colors.grey[700],   
+                          fontWeight: FontWeight.w500, 
                         ),
                       ),
                     ],
                   ),
                   SizedBox(height: 1 * sf),
                   Text(
-                    firstName,
+                    fullName, 
                     style: TextStyle(
                       fontSize: 16 * sf,
                       fontWeight: FontWeight.bold,
@@ -198,40 +181,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ),
-            // Notification bell
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Material(
-                  color: Colors.grey.shade100,
-                  shape: const CircleBorder(),
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () {},
-                    child: Padding(
-                      padding: EdgeInsets.all(9 * sf),
-                      child: Icon(
-                        Icons.notifications_outlined,
-                        color: Colors.black87,
-                        size: 20 * sf,
-                      ),
-                    ),
+            // Notification bell — no red dot, no Stack
+            Material(
+              color: Colors.grey.shade100,
+              shape: const CircleBorder(),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: () {},
+                child: Padding(
+                  padding: EdgeInsets.all(9 * sf),
+                  child: Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.black87,
+                    size: 20 * sf,
                   ),
                 ),
-                Positioned(
-                  top: 2,
-                  right: 2,
-                  child: Container(
-                    width: 8 * sf,
-                    height: 8 * sf,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 1.5),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
@@ -239,7 +204,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Hero Section ──────────────────────────────────────────────────────────
+  //  Hero Section 
 
   Widget _buildHeroSection(double sf) {
     return Container(
@@ -361,7 +326,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Browse Categories ─────────────────────────────────────────────────────
+  //  Browse Categories
 
   Widget _buildCategoriesSection(double sf) {
     // Category chip height scales with sf
@@ -450,7 +415,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── Top Providers ─────────────────────────────────────────────────────────
+  //  Top Providers 
 
   Widget _buildTopProvidersPreview(
       ProviderState state, double sf, double screenWidth) {
@@ -517,7 +482,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // ── All Providers Grid ────────────────────────────────────────────────────
+  //  All Providers Grid 
 
   Widget _buildAllProvidersGrid(
       ProviderState state, double sf, double screenWidth) {
@@ -597,7 +562,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-// ── Shared Section Header ─────────────────────────────────────────────────────
+//  Shared Section Header 
 
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -678,7 +643,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ── Category Chip ─────────────────────────────────────────────────────────────
+//  Category Chip 
 
 class _CategoryChip extends StatelessWidget {
   final String title;

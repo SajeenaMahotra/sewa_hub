@@ -459,7 +459,7 @@ class BookingSummaryPage extends ConsumerWidget {
   }
 }
 
-// ── Sub-widgets ────────────────────────────────────────────────────────────────
+//  Sub-widgets 
 
 class _SummaryCard extends StatelessWidget {
   final Widget child;

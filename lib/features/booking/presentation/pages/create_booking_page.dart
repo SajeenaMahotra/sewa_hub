@@ -383,7 +383,7 @@ class _CreateBookingPageState extends ConsumerState<CreateBookingPage> {
   }
 }
 
-// ── Sub-widgets ────────────────────────────────────────────────────────────────
+//  Sub-widgets 
 
 class _ProviderSummaryCard extends StatelessWidget {
   final String name;
@@ -582,7 +582,7 @@ class _DateTimeButton extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       color: hasValue
                           ? const Color(0xFF0F172A)
-                          : const Color(0xFFD1D5DB),
+                          : const Color(0xFF9CA3AF),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -621,7 +621,7 @@ class _InputField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(
-            color: Color(0xFFD1D5DB), fontSize: 13),
+            color: Color(0xFF9CA3AF), fontSize: 13),
         prefixIcon: Icon(icon, size: 18, color: const Color(0xFF94A3B8)),
         contentPadding: const EdgeInsets.symmetric(
             horizontal: 14, vertical: 14),

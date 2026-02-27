@@ -212,8 +212,7 @@ class _ProviderCardState extends State<ProviderCard>
   }
 }
 
-// ── Stat Tile ─────────────────────────────────────────────────────────────────
-
+//  Stat Tile 
 class _StatTile extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -276,7 +275,7 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-// ── Avatar ────────────────────────────────────────────────────────────────────
+//  Avatar 
 
 class _Avatar extends StatelessWidget {
   final String imageUrl;
@@ -318,7 +317,7 @@ class _InitialsWidget extends StatelessWidget {
   }
 }
 
-// ── Category Pill ─────────────────────────────────────────────────────────────
+//  Category Pill 
 
 class _CategoryPill extends StatelessWidget {
   final String label;
@@ -339,7 +338,7 @@ class _CategoryPill extends StatelessWidget {
   }
 }
 
-// ── Rating Badge ──────────────────────────────────────────────────────────────
+//  Rating Badge
 
 class _RatingBadge extends StatelessWidget {
   final double rating;

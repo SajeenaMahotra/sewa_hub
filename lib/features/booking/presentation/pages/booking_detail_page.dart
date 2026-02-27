@@ -20,7 +20,7 @@ class BookingDetailPage extends ConsumerWidget {
   static const _divider = Color(0xFFF1F5F9);
   static const _red = Color(0xFFEF4444);
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
+  //  Helpers
 
   String get _providerName {
     if (booking.provider is Map) {
@@ -71,7 +71,7 @@ class BookingDetailPage extends ConsumerWidget {
 
   bool get _canCancel => booking.status == 'pending';
 
-  // ── Build ─────────────────────────────────────────────────────────────────
+  //  Build 
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -415,8 +415,7 @@ class BookingDetailPage extends ConsumerWidget {
   }
 }
 
-// ── Status Timeline ────────────────────────────────────────────────────────────
-
+//  Status Timeline 
 class _StatusTimeline extends StatelessWidget {
   final String currentStatus;
 
@@ -555,7 +554,7 @@ class _StatusTimeline extends StatelessWidget {
   }
 }
 
-// ── Shared Sub-widgets ─────────────────────────────────────────────────────────
+//  Shared Sub-widgets 
 
 class _DetailCard extends StatelessWidget {
   final Widget child;

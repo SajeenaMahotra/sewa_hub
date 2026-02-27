@@ -18,7 +18,7 @@ class ProviderDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _ProviderDetailScreenState extends ConsumerState<ProviderDetailScreen> {
-  // ── Design tokens ──────────────────────────────────────────────────────────
+  //  Design tokens 
   static const _orange = Color(0xFFFF6B35);
   static const _bg = Color(0xFFF7F7F5);
   static const _textPrimary = Color(0xFF0F172A);
@@ -466,7 +466,7 @@ class _ProviderDetailScreenState extends ConsumerState<ProviderDetailScreen> {
   }
 }
 
-// ── Shared Sub-widgets ────────────────────────────────────────────────────────
+//  Shared Sub-widgets 
 
 class _Card extends StatelessWidget {
   final Widget child;
