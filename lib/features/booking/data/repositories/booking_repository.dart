@@ -13,7 +13,6 @@ final bookingRepositoryProvider = Provider<IBookingRepository>((ref) {
 
 class BookingRepository implements IBookingRepository {
   final BookingRemoteDataSource _remoteDataSource;
-
   BookingRepository({required BookingRemoteDataSource remoteDataSource})
       : _remoteDataSource = remoteDataSource;
 
@@ -22,15 +21,17 @@ class BookingRepository implements IBookingRepository {
     required String providerId,
     required DateTime scheduledAt,
     required String address,
+    required String phoneNumber,     // ← new
     String? note,
     String severity = 'normal',
   }) async {
     final result = await _remoteDataSource.createBooking(
-      providerId: providerId,
+      providerId:  providerId,
       scheduledAt: scheduledAt,
-      address: address,
-      note: note,
-      severity: severity,
+      address:     address,
+      phoneNumber: phoneNumber,      // ← new
+      note:        note,
+      severity:    severity,
     );
     return result.map((model) => model.toEntity());
   }
@@ -77,5 +78,14 @@ class BookingRepository implements IBookingRepository {
       String bookingId) async {
     final result = await _remoteDataSource.getBookingById(bookingId);
     return result.map((model) => model.toEntity());
+  }
+
+  @override
+  Future<Either<Failure, void>> rateProvider({
+    required String bookingId,
+    required int rating,
+  }) async {
+    return _remoteDataSource.rateProvider(
+        bookingId: bookingId, rating: rating);
   }
 }

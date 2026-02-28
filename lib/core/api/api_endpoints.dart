@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const bool isPhysicalDevice = false;
+  static const bool isPhysicalDevice = true;
 
-  static const String compIpAddress = "192.168.1.1";
+  static const String compIpAddress = "192.168.1.76";
 
-  // Base URL 
+  // Base URL R
   // static const String baseUrl = 'http://10.0.2.2:5050/api/';
   // //static const String baseUrl = 'http://localhost:3000/api/v1';
   // // For Android Emulator use: 'http://10.0.2.2:3000/api/v1'
@@ -55,6 +55,7 @@ class ApiEndpoints {
   static String bookingStatus(String id) => 'bookings/$id/status';
   static String cancelBooking(String id) => 'bookings/$id/cancel';
   static String bookingById(String id) => 'bookings/$id';
+  static String rateProvider(String id)   => 'provider/rate/$id';
 
   // ================= Chat Endpoints =================
 static const String sendMessage = 'chat';                          // POST /api/chat
