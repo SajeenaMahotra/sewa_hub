@@ -159,19 +159,6 @@ class ProfileScreen extends ConsumerWidget {
                       onTap: () {},
                     ),
                     _MenuItem(
-                      icon: Icons.palette_outlined,
-                      label: 'Theme',
-                      onTap: () {},
-                      trailing: Transform.scale(
-                        scale: 0.8,
-                        child: Switch(
-                          value: false,
-                          onChanged: (_) {},
-                          activeColor: _orange,
-                        ),
-                      ),
-                    ),
-                    _MenuItem(
                       icon: Icons.notifications_none_outlined,
                       label: 'Notifications',
                       onTap: () {},

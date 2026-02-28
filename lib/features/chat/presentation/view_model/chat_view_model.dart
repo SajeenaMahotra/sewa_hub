@@ -7,7 +7,6 @@ import 'package:sewa_hub/features/chat/domain/usecases/mark_as_read_usecase.dart
 import 'package:sewa_hub/features/chat/domain/usecases/send_messages_usecase.dart';
 import 'package:sewa_hub/features/chat/presentation/state/chat_state.dart';
 
-// StateNotifierProvider.family — works with ALL Riverpod versions
 final chatViewModelProvider =
     StateNotifierProvider.family<ChatViewModel, ChatState, String>(
   (ref, bookingId) => ChatViewModel(ref: ref, bookingId: bookingId),
@@ -44,16 +43,17 @@ class ChatViewModel extends StateNotifier<ChatState> {
     super.dispose();
   }
 
-  // ── Socket ────────────────────────────────────────────────────────────────
-
   void initSocket() {
-    _socketService.connect();
+    // Register listeners FIRST, then connect+join
+    // socket_service queues joinRoom if not yet connected
     _registerSocketListeners();
+    _socketService.connect();
     _socketService.joinRoom(_bookingId);
   }
 
   void _registerSocketListeners() {
     _socketService.onNewMessage((data) {
+      print('[Chat] new_message: $data');
       try {
         final message = MessageApiModel.fromJson(
           Map<String, dynamic>.from(data as Map),
@@ -63,11 +63,12 @@ class ChatViewModel extends StateNotifier<ChatState> {
           state = state.copyWith(messages: [...state.messages, message]);
         }
       } catch (e) {
-        print('[Socket] new_message parse error: $e');
+        print('[Chat] new_message parse error: $e');
       }
     });
 
     _socketService.onRoomJoined((data) {
+      print('[Chat] room_joined: $data');
       try {
         final raw = data as Map;
         final messagesList = raw['messages'] as List<dynamic>? ?? [];
@@ -78,28 +79,25 @@ class ChatViewModel extends StateNotifier<ChatState> {
             .toList();
         state = state.copyWith(status: ChatStatus.loaded, messages: messages);
       } catch (e) {
-        print('[Socket] room_joined parse error: $e');
+        print('[Chat] room_joined parse error: $e');
       }
     });
 
     _socketService.onMessagesRead((_) {});
 
-    _socketService.onUserTyping((_) {
-      state = state.copyWith(isPartnerTyping: true);
-    });
+    _socketService.onUserTyping((_) =>
+        state = state.copyWith(isPartnerTyping: true));
 
-    _socketService.onUserStoppedTyping((_) {
-      state = state.copyWith(isPartnerTyping: false);
-    });
+    _socketService.onUserStoppedTyping((_) =>
+        state = state.copyWith(isPartnerTyping: false));
 
-    _socketService.onError((data) {
-      print('[Socket] Error: $data');
-    });
+    _socketService.onError((data) =>
+        print('[Chat] socket error: $data'));
   }
 
-  // ── Actions ───────────────────────────────────────────────────────────────
-
   Future<void> loadMessages({bool refresh = false}) async {
+    if (!refresh && state.status == ChatStatus.loaded) return;
+
     state = state.copyWith(status: ChatStatus.loading);
     final result = await _getMessagesUsecase.call(
       GetMessagesParam(bookingId: _bookingId, page: 1),
@@ -122,10 +120,14 @@ class ChatViewModel extends StateNotifier<ChatState> {
     if (content.trim().isEmpty) return;
     state = state.copyWith(isSending: true);
 
+    print('[Chat] sendMessage — isConnected=${_socketService.isConnected}');
+
     if (_socketService.isConnected) {
       _socketService.sendMessage(_bookingId, content.trim());
       state = state.copyWith(isSending: false);
     } else {
+      // REST fallback — message will appear immediately
+      print('[Chat] socket not connected, falling back to REST');
       final result = await _sendMessageUsecase.call(
         SendMessageParam(bookingId: _bookingId, content: content.trim()),
       );
