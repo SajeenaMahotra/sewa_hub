@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sewa_hub/features/booking/domain/entities/booking_entity.dart';
 import 'package:sewa_hub/features/booking/presentation/pages/booking_detail_page.dart';
 import 'package:sewa_hub/features/booking/presentation/widgets/booking_status_badge.dart';
+import 'package:sewa_hub/features/booking/presentation/widgets/rating_dialog.dart';
 import 'package:sewa_hub/features/chat/presentation/pages/chat_page.dart';
 
-class BookingCard extends StatelessWidget {
+// ── Must be ConsumerWidget so it can pass `ref` to showRatingDialog ──────────
+class BookingCard extends ConsumerWidget {
   final BookingEntity booking;
   final VoidCallback? onCancel;
-  final VoidCallback? onRate; // ← new
 
   const BookingCard({
     super.key,
     required this.booking,
     this.onCancel,
-    this.onRate,
   });
 
-  static const _orange = Color(0xFFFF6B35);
+  static const _orange      = Color(0xFFFF6B35);
   static const _textPrimary = Color(0xFF0F172A);
 
   String get _providerName {
     if (booking.provider is Map) {
-      final providerMap = booking.provider as Map;
-      final user = providerMap['Useruser_id'];
+      final user = (booking.provider as Map)['Useruser_id'];
       if (user is Map) return user['fullname']?.toString() ?? 'Provider';
     }
     return 'Provider';
@@ -31,13 +31,11 @@ class BookingCard extends StatelessWidget {
 
   String get _providerImage {
     if (booking.provider is Map) {
-      final providerMap = booking.provider as Map;
-      final user = providerMap['Useruser_id'];
+      final user = (booking.provider as Map)['Useruser_id'];
       if (user is Map) {
         final img = user['imageUrl']?.toString() ?? '';
         if (img.isEmpty) return '';
-        if (img.startsWith('http')) return img;
-        return 'http://10.0.2.2:5050$img';
+        return img.startsWith('http') ? img : 'http://10.0.2.2:5050$img';
       }
     }
     return '';
@@ -45,7 +43,6 @@ class BookingCard extends StatelessWidget {
 
   String get _bookingId => booking.id ?? '';
 
-  // Only active bookings can chat
   bool get _canChat =>
       booking.status == 'accepted' || booking.status == 'pending';
 
@@ -62,17 +59,28 @@ class BookingCard extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => ChatPage(
-          bookingId: _bookingId,
-          providerName: _providerName,
+          bookingId:     _bookingId,
+          providerName:  _providerName,
           providerImage: _providerImage,
         ),
       ),
     );
   }
 
+  // ── Opens the rating bottom sheet directly ───────────────────────────────
+  void _openRating(BuildContext context, WidgetRef ref) {
+    showRatingDialog(
+      context,
+      ref,
+      bookingId:    _bookingId,
+      providerName: _providerName,
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final name = _providerName;
+
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -95,14 +103,14 @@ class BookingCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Top gradient bar
+            // Gradient bar
             Container(
               height: 4,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFFF6B35), Color(0xFFFF9A6C)],
-                ),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    colors: [Color(0xFFFF6B35), Color(0xFFFF9A6C)]),
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(16)),
               ),
             ),
 
@@ -111,38 +119,34 @@ class BookingCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header
+                  // Header row
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 44,
-                        height: 44,
+                        width: 44, height: 44,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: const Color(0xFFFFF3EE),
-                          border: Border.all(color: const Color(0xFFFFDDCC)),
+                          border:
+                              Border.all(color: const Color(0xFFFFDDCC)),
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: _providerImage.isNotEmpty
-                            ? Image.network(
-                                _providerImage,
+                            ? Image.network(_providerImage,
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => Center(
-                                  child: Text(_initials(name),
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w800,
-                                          color: _orange)),
-                                ),
-                              )
+                                    child: Text(_initials(name),
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800,
+                                            color: _orange))))
                             : Center(
                                 child: Text(_initials(name),
                                     style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w800,
-                                        color: _orange)),
-                              ),
+                                        color: _orange))),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -174,66 +178,63 @@ class BookingCard extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Bottom row
+                  // Bottom action row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          _SeverityChip(severity: booking.severity),
-                          const SizedBox(width: 8),
-                          Text(
-                            'NPR ${booking.effectivePricePerHour.toStringAsFixed(0)}/hr',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: _orange),
+                      // Severity + price
+                      Row(children: [
+                        _SeverityChip(severity: booking.severity),
+                        const SizedBox(width: 8),
+                        Text(
+                          'NPR ${booking.effectivePricePerHour.toStringAsFixed(0)}/hr',
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: _orange),
+                        ),
+                      ]),
+
+                      // Action buttons
+                      Row(children: [
+                        // Message (active bookings)
+                        if (_canChat)
+                          _ActionButton(
+                            icon: Icons.chat_bubble_outline_rounded,
+                            label: 'Message',
+                            color: _orange,
+                            bgColor: const Color(0xFFFFF3EE),
+                            borderColor: const Color(0xFFFFDDCC),
+                            onTap: () => _openChat(context),
+                          ),
+
+                        // Rate (completed bookings) ← now actually works
+                        if (_isCompleted) ...[
+                          if (_canChat) const SizedBox(width: 8),
+                          _ActionButton(
+                            icon: Icons.star_outline_rounded,
+                            label: 'Rate',
+                            color: const Color(0xFFF59E0B),
+                            bgColor: const Color(0xFFFFFBEB),
+                            borderColor: const Color(0xFFFDE68A),
+                            onTap: () => _openRating(context, ref), // ← fixed
                           ),
                         ],
-                      ),
 
-                      Row(
-                        children: [
-                          // Message — only for active bookings
-                          if (_canChat)
-                            _ActionButton(
-                              icon: Icons.chat_bubble_outline_rounded,
-                              label: 'Message',
-                              color: _orange,
-                              bgColor: const Color(0xFFFFF3EE),
-                              borderColor: const Color(0xFFFFDDCC),
-                              onTap: () => _openChat(context),
-                            ),
-
-                          // Rate — only for completed bookings
-                          if (_isCompleted) ...[
-                            _ActionButton(
-                              icon: Icons.star_outline_rounded,
-                              label: 'Rate',
-                              color: const Color(0xFFF59E0B),
-                              bgColor: const Color(0xFFFFFBEB),
-                              borderColor: const Color(0xFFFDE68A),
-                              onTap: onRate ?? () {},
-                            ),
-                          ],
-
-                          if (_canChat &&
-                              booking.status == 'pending' &&
-                              onCancel != null)
-                            const SizedBox(width: 8),
-
-                          // Cancel
-                          if (booking.status == 'pending' && onCancel != null)
-                            _ActionButton(
-                              icon: null,
-                              label: 'Cancel',
-                              color: const Color(0xFFEF4444),
-                              bgColor: Colors.transparent,
-                              borderColor: const Color(0xFFEF4444),
-                              onTap: onCancel!,
-                            ),
+                        // Cancel (pending bookings)
+                        if (booking.status == 'pending' &&
+                            onCancel != null) ...[
+                          const SizedBox(width: 8),
+                          _ActionButton(
+                            icon: null,
+                            label: 'Cancel',
+                            color: const Color(0xFFEF4444),
+                            bgColor: Colors.transparent,
+                            borderColor: const Color(0xFFEF4444),
+                            onTap: onCancel!,
+                          ),
                         ],
-                      ),
+                      ]),
                     ],
                   ),
                 ],
@@ -246,12 +247,14 @@ class BookingCard extends StatelessWidget {
   }
 }
 
+// ── Sub-widgets ───────────────────────────────────────────────────────────────
+
 class _ActionButton extends StatelessWidget {
   final IconData? icon;
-  final String label;
-  final Color color;
-  final Color bgColor;
-  final Color borderColor;
+  final String    label;
+  final Color     color;
+  final Color     bgColor;
+  final Color     borderColor;
   final VoidCallback onTap;
 
   const _ActionButton({
@@ -295,7 +298,7 @@ class _ActionButton extends StatelessWidget {
 
 class _InfoRow extends StatelessWidget {
   final IconData icon;
-  final String text;
+  final String   text;
   const _InfoRow({required this.icon, required this.text});
 
   @override
@@ -307,7 +310,8 @@ class _InfoRow extends StatelessWidget {
         const SizedBox(width: 6),
         Expanded(
           child: Text(text,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+              style: const TextStyle(
+                  fontSize: 12, color: Color(0xFF64748B)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
         ),
