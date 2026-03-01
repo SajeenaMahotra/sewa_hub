@@ -33,10 +33,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _validateAndLogin() async {
     if (_formKey.currentState!.validate()) {
       // Form is valid, proceed with login
-      ref.read(authViewModelProvider.notifier).login(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+      ref
+          .read(authViewModelProvider.notifier)
+          .login(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
     } else {
       // Form validation failed, show error snackbar
       SnackbarUtils.showError(
@@ -70,10 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         _emailController.clear();
         _passwordController.clear();
 
-        AppRoutes.pushReplacement(
-          context,
-          const DashboardScreen(),
-        );
+        AppRoutes.pushReplacement(context, const DashboardScreen());
       }
     });
 
@@ -207,27 +206,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 25),
                         // Google and Apple Buttons
-                        SingleChildScrollView(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Button1(
-                                logoPath: 'assets/images/google_logo.png',
-                                onPressed: () {
-                                  // Add Google login logic
-                                },
-                                logoSize: 60,
-                              ),
-                              const SizedBox(width: 16),
-                              Button1(
-                                logoPath: 'assets/images/apple_logo.png',
-                                onPressed: () {
-                                  // Add Apple login logic
-                                },
-                                logoSize: 60,
-                              ),
-                            ],
-                          ),
+                        Button1(
+                          logoPath: 'assets/images/google_logo.png',
+                          text: 'Continue with Google',
+                          onPressed: () {},
                         ),
                         const SizedBox(height: 30),
                         // Don't have account link
@@ -240,7 +222,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                               AppRoutes.push(context,const SignupScreen(),);
+                                AppRoutes.push(context, const SignupScreen());
                               },
                               child: const Text(
                                 "Create One",
