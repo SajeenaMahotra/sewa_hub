@@ -96,9 +96,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<ProviderEntity> _topRated(List<ProviderEntity> providers) {
     final sorted = [...providers];
     sorted.sort((a, b) {
-      final ratingDiff = (b.rating ?? 0).compareTo(a.rating ?? 0);
+      final ratingDiff = (b.rating).compareTo(a.rating );
       if (ratingDiff != 0) return ratingDiff;
-      return (b.ratingCount ?? 0).compareTo(a.ratingCount ?? 0);
+      return (b.ratingCount).compareTo(a.ratingCount);
     });
     return sorted.take(6).toList();
   }
@@ -362,7 +362,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     } else {
       cardWidth = screenWidth * 0.52;
     }
-    final cardHeight = cardWidth * 1.05;
+    final cardHeight = cardWidth * 1.18;
 
     // Sort providers: highest rating → highest ratingCount → original order
     final topProviders = _topRated(state.providers);

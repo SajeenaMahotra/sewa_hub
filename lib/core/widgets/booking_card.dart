@@ -67,7 +67,6 @@ class BookingCard extends ConsumerWidget {
     );
   }
 
-  // ── Opens the rating bottom sheet directly ───────────────────────────────
   void _openRating(BuildContext context, WidgetRef ref) {
     showRatingDialog(
       context,
