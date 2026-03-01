@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:sewa_hub/core/api/api_client.dart';
 import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/services/storage/token_service.dart';
@@ -59,7 +62,7 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
 
       return user;
     }
-    
+
     return null;
   }
 
@@ -76,5 +79,81 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
     }
 
     return user;
+  }
+
+  @override
+  Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.changePassword,
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmNewPassword': confirmNewPassword,
+      },
+    );
+    return response.data['success'] == true;
+  }
+
+  @override
+  Future<bool> forgotPassword(String email) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.sendResetPasswordEmail,
+      data: {'email': email},
+    );
+    return response.data['success'] == true;
+  }
+
+  @override
+  Future<AuthApiModel?> loginWithGoogle() async {
+    // Your backend URL for Google OAuth
+    final serverUrl = ApiEndpoints.baseUrl.replaceAll(RegExp(r'/api/?$'), ''); // change to env/config
+    final callbackUrlScheme =
+        'sewahub'; // must match AndroidManifest / Info.plist
+
+    // Open browser → backend redirects to your callback with token
+    final result = await FlutterWebAuth2.authenticate(
+      url: '$serverUrl/api/auth/google?role=user&state=mobile',
+      callbackUrlScheme: callbackUrlScheme,
+    );
+
+    // Backend redirects to: sewahub://auth/google/success?token=xxx
+    final uri = Uri.parse(result);
+    final token = uri.queryParameters['token'];
+
+    if (token == null) throw Exception('No token received from Google');
+
+    // Save token
+    await _tokenService.saveToken(token);
+
+    // Decode payload to get user info (JWT decode without verification)
+    final payload = _decodeJwtPayload(token);
+
+    final user = AuthApiModel(
+      authId: payload['id'] as String?,
+      fullName: payload['fullname'] as String? ?? '',
+      email: payload['email'] as String? ?? '',
+    );
+
+    await _userSessionService.saveUserSession(
+      userId: user.authId!,
+      email: user.email,
+      fullName: user.fullName,
+    );
+
+    return user;
+  }
+
+  Map<String, dynamic> _decodeJwtPayload(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) throw Exception('Invalid JWT');
+    final payload = parts[1];
+    // Base64 padding fix
+    final normalized = base64Url.normalize(payload);
+    final decoded = utf8.decode(base64Url.decode(normalized));
+    return jsonDecode(decoded) as Map<String, dynamic>;
   }
 }

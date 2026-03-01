@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
+import 'package:sewa_hub/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:sewa_hub/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
@@ -172,7 +173,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                             child: GestureDetector(
                               onTap: () {
-                                // Add forgot password logic here
+                                AppRoutes.push(
+                                  context,
+                                  const ForgotPasswordPage(),
+                                );
                               },
                               child: Text(
                                 "Forgot Password?",
@@ -198,7 +202,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 20),
                         const Text(
-                          "Or continue with",
+                          "OR",
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(255, 120, 120, 120),
@@ -209,7 +213,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Button1(
                           logoPath: 'assets/images/google_logo.png',
                           text: 'Continue with Google',
-                          onPressed: () {},
+                          onPressed: () {
+                             ref.read(authViewModelProvider.notifier).loginWithGoogle();
+                          },
                         ),
                         const SizedBox(height: 30),
                         // Don't have account link
