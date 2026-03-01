@@ -51,14 +51,20 @@ class AuthViewModel extends Notifier<AuthState> {
   }
 
 
-  Future<void> loginWithGoogle() async {
-    state = state.copyWith(status: AuthStatus.loading);
-    final result = await _googleLoginUsecase.call();
-    result.fold(
-      (failure) => state = state.copyWith(status: AuthStatus.error, errorMessage: failure.toString()),
-      (authEntity) => state = state.copyWith(status: AuthStatus.authenticated, authEntity: authEntity),
-    );
-  }
+  Future<void> loginWithGoogle(String idToken) async {
+  state = state.copyWith(status: AuthStatus.loading);
+  final result = await _googleLoginUsecase.call(GoogleLoginParam(idToken: idToken));
+  result.fold(
+    (failure) => state = state.copyWith(
+      status: AuthStatus.error,
+      errorMessage: failure.toString(),
+    ),
+    (authEntity) => state = state.copyWith(
+      status: AuthStatus.authenticated,
+      authEntity: authEntity,
+    ),
+  );
+}
 
 
   Future<void> forgotPassword({required String email}) async {

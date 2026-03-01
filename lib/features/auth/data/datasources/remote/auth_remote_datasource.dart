@@ -108,44 +108,27 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
   }
 
   @override
-  Future<AuthApiModel?> loginWithGoogle() async {
-    // Your backend URL for Google OAuth
-    final serverUrl = ApiEndpoints.baseUrl.replaceAll(RegExp(r'/api/?$'), ''); // change to env/config
-    final callbackUrlScheme =
-        'sewahub'; // must match AndroidManifest / Info.plist
+Future<AuthApiModel?> loginWithGoogle(String idToken) async {
+  final response = await _apiClient.post(
+    ApiEndpoints.googleTokenLogin,
+    data: {'idToken': idToken},
+  );
 
-    // Open browser → backend redirects to your callback with token
-    final result = await FlutterWebAuth2.authenticate(
-      url: '$serverUrl/api/auth/google?role=user&state=mobile',
-      callbackUrlScheme: callbackUrlScheme,
-    );
+  if (response.data['success'] == true) {
+    final data = response.data['data'] as Map<String, dynamic>;
+    final user = AuthApiModel.fromJson(data);
+    final token = response.data['token'] as String;
 
-    // Backend redirects to: sewahub://auth/google/success?token=xxx
-    final uri = Uri.parse(result);
-    final token = uri.queryParameters['token'];
-
-    if (token == null) throw Exception('No token received from Google');
-
-    // Save token
     await _tokenService.saveToken(token);
-
-    // Decode payload to get user info (JWT decode without verification)
-    final payload = _decodeJwtPayload(token);
-
-    final user = AuthApiModel(
-      authId: payload['id'] as String?,
-      fullName: payload['fullname'] as String? ?? '',
-      email: payload['email'] as String? ?? '',
-    );
-
     await _userSessionService.saveUserSession(
       userId: user.authId!,
       email: user.email,
       fullName: user.fullName,
     );
-
     return user;
   }
+  return null;
+}
 
   Map<String, dynamic> _decodeJwtPayload(String token) {
     final parts = token.split('.');

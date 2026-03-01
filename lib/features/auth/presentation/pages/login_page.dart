@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/forgot_password_page.dart';
@@ -213,8 +214,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Button1(
                           logoPath: 'assets/images/google_logo.png',
                           text: 'Continue with Google',
-                          onPressed: () {
-                             ref.read(authViewModelProvider.notifier).loginWithGoogle();
+                          onPressed: () async {
+                            try {
+                              await GoogleSignIn.instance.initialize(
+                                serverClientId:
+                                    "483781820143-nkmm0bn3dsq9enqms6b3betvldjnsn0k.apps.googleusercontent.com", // from Google Console → Web client
+                              );
+                              final userData = await GoogleSignIn.instance
+                                  .authenticate(scopeHint: ['email']);
+                              final idToken = userData.authentication.idToken;
+                              if (idToken == null)
+                                throw Exception('No ID token');
+                              ref
+                                  .read(authViewModelProvider.notifier)
+                                  .loginWithGoogle(idToken);
+                            } catch (e) {
+                              SnackbarUtils.showError(
+                                context,
+                                message: 'Google login failed: $e',
+                              );
+                            }
                           },
                         ),
                         const SizedBox(height: 30),

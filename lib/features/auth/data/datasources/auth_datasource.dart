@@ -16,7 +16,7 @@ abstract interface class IAuthRemoteDataSource{
   Future<AuthApiModel> register(AuthApiModel user);
   Future<AuthApiModel?> login(String email, String password);
   Future<AuthApiModel?> getUserById(String authId);
-  Future<AuthApiModel?> loginWithGoogle();      
+  Future<AuthApiModel?> loginWithGoogle(String idToken);    
   Future<bool> forgotPassword(String email);     
   Future<bool> changePassword({                  
     required String currentPassword,

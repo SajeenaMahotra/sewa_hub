@@ -40,10 +40,10 @@ class ApiEndpoints {
   static const String register = 'auth/register';
   static const String login = 'auth/login';
   static const String googleAuth = '/auth/google';
-  static const String sendResetPasswordEmail =
-      '/auth/send-reset-password-email';
+  static const String sendResetPasswordEmail ='/auth/send-reset-password-email';
   static const String resetPassword = '/auth/reset-password'; // + /:token
   static const String changePassword = '/auth/change-password';
+  static const String googleTokenLogin = 'auth/google/token';
 
   // ================= Profile Endpoints =================
   static const String whoami = 'auth/whoami';
