@@ -28,7 +28,7 @@ class ProfileScreen extends ConsumerWidget {
     final fullName = profile?.fullName ?? 'SewaHub User';
     final email = profile?.email ?? '';
     final imageUrl = profile?.profilePicture != null
-        ? 'http://10.0.2.2:5050${profile!.profilePicture!}'
+        ? 'http://192.168.1.76:5050${profile!.profilePicture!}'
         : null;
 
     return Scaffold(
@@ -38,7 +38,7 @@ class ProfileScreen extends ConsumerWidget {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              //  Orange gradient header
+              // ── Orange header ──
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
@@ -57,7 +57,6 @@ class ProfileScreen extends ConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 36),
                     child: Column(
                       children: [
-                        // Top bar
                         const Text(
                           'My Profile',
                           style: TextStyle(
@@ -67,7 +66,6 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 28),
-
                         // Avatar
                         Container(
                           width: 88,
@@ -88,7 +86,6 @@ class ProfileScreen extends ConsumerWidget {
                               : _Initials(name: fullName),
                         ),
                         const SizedBox(height: 12),
-
                         Text(
                           fullName,
                           style: const TextStyle(
@@ -108,11 +105,10 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                         ],
                         const SizedBox(height: 18),
-
-                        // Edit button
+                        // Edit Profile button
                         GestureDetector(
-                          onTap: () => AppRoutes.push(
-                              context, const EditProfilePage()),
+                          onTap: () =>
+                              AppRoutes.push(context, const EditProfilePage()),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 28, vertical: 9),
@@ -145,26 +141,13 @@ class ProfileScreen extends ConsumerWidget {
 
               const SizedBox(height: 28),
 
-              //  Menu sections 
+              // ── Menu sections ──
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const _SectionLabel('Preferences'),
-                    const SizedBox(height: 8),
-                    _MenuItem(
-                      icon: Icons.location_on_outlined,
-                      label: 'Location',
-                      onTap: () {},
-                    ),
-                    _MenuItem(
-                      icon: Icons.notifications_none_outlined,
-                      label: 'Notifications',
-                      onTap: () {},
-                    ),
-
-                    const SizedBox(height: 20),
+                    // About section
                     const _SectionLabel('About'),
                     const SizedBox(height: 8),
                     _MenuItem(
@@ -179,62 +162,45 @@ class ProfileScreen extends ConsumerWidget {
                     ),
 
                     const SizedBox(height: 20),
+
+                    // Account section
                     const _SectionLabel('Account'),
                     const SizedBox(height: 8),
+                    
+                    // Log Out
+                    _MenuItem(
+                      icon: Icons.logout_rounded,
+                      label: 'Log Out',
+                      iconColor: const Color(0xFFEF4444),
+                      labelColor: const Color(0xFFEF4444),
+                      onTap: () async {
+                        final authRepo = ref.read(authRepositoryProvider);
+                        final result = await authRepo.logOut();
+                        result.fold(
+                          (failure) => SnackbarUtils.showError(context,
+                              message: failure.message),
+                          (success) {
+                            if (success) {
+                              SnackbarUtils.showSuccess(context,
+                                  message: 'Logged out successfully');
+                              AppRoutes.pushReplacement(
+                                  context, const LoginScreen());
+                            }
+                          },
+                        );
+                      },
+                    ),
 
-                    // Logout
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x08000000),
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                    const SizedBox(height: 32),
+
+                    // App version
+                    Center(
+                      child: Text(
+                        'SewaHub v1.0.0',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade400,
                         ),
-                        leading: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEF4444).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(Icons.logout_rounded,
-                              color: Color(0xFFEF4444), size: 18),
-                        ),
-                        title: const Text(
-                          'Log Out',
-                          style: TextStyle(
-                            color: Color(0xFFEF4444),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        trailing: const Icon(Icons.chevron_right,
-                            color: Color(0xFFEF4444), size: 18),
-                        onTap: () async {
-                          final authRepo = ref.read(authRepositoryProvider);
-                          final result = await authRepo.logOut();
-                          result.fold(
-                            (failure) => SnackbarUtils.showError(context,
-                                message: failure.message),
-                            (success) {
-                              if (success) {
-                                SnackbarUtils.showSuccess(context,
-                                    message: 'Logged out successfully');
-                                AppRoutes.pushReplacement(
-                                    context, const LoginScreen());
-                              }
-                            },
-                          );
-                        },
                       ),
                     ),
 
@@ -250,7 +216,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ──
 
 class _Initials extends StatelessWidget {
   final String name;
@@ -266,11 +232,14 @@ class _Initials extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         color: Colors.white.withOpacity(0.25),
         child: Center(
-          child: Text(_text,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800)),
+          child: Text(
+            _text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
         ),
       );
 }
@@ -298,16 +267,16 @@ class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final Widget? trailing;
+  final Color iconColor;
+  final Color labelColor;
 
   const _MenuItem({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.trailing,
+    this.iconColor = const Color(0xFFFF6B35),
+    this.labelColor = const Color(0xFF0F172A),
   });
-
-  static const _orange = Color(0xFFFF6B35);
 
   @override
   Widget build(BuildContext context) {
@@ -333,22 +302,24 @@ class _MenuItem extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF3EE),
+            color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: _orange, size: 18),
+          child: Icon(icon, color: iconColor, size: 18),
         ),
         title: Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: labelColor,
           ),
         ),
-        trailing: trailing ??
-            const Icon(Icons.chevron_right_rounded,
-                color: Color(0xFFCBD5E1), size: 18),
+        trailing: Icon(
+          Icons.chevron_right_rounded,
+          color: iconColor.withOpacity(0.4),
+          size: 18,
+        ),
       ),
     );
   }

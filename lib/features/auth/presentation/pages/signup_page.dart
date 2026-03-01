@@ -195,18 +195,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         ),
                         const SizedBox(height: 20),
                         const Text(
-                          "Or continue with",
+                          "OR",
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(255, 120, 120, 120),
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // ✅ Button1 directly, no Row wrapper
                         Button1(
                           logoPath: 'assets/images/google_logo.png',
                           text: 'Continue with Google',
-                          onPressed: () {},
+                          onPressed: () {
+                             ref.read(authViewModelProvider.notifier).loginWithGoogle();
+                          },
                         ),
                         const SizedBox(height: 24),
                         const Text(

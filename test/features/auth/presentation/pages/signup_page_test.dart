@@ -100,7 +100,7 @@ void main() {
     testWidgets('should display OR text', (tester) async {
       await tester.pumpWidget(createTestWidget());
 
-      expect(find.text('Or continue with'), findsOneWidget);
+      expect(find.text('OR'), findsOneWidget);
     });
 
     testWidgets('should display terms and conditions text', (tester) async {
