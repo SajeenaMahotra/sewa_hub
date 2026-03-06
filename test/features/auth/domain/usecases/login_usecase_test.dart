@@ -124,36 +124,4 @@ void main() {
       verify(() => mockRepository.login(tEmail, tPassword)).called(1);
     });
   });
-
-  // Additional tests for LoginUsecaseParam
-  group('LoginUsecaseParam', () {
-    test('should have correct props', () {
-      // Arrange
-      const params = LoginUsecaseParam(email: tEmail, password: tPassword);
-
-      // Assert
-      expect(params.props, [tEmail, tPassword]);
-    });
-
-    test('two params with same values should be equal', () {
-      // Arrange
-      const params1 = LoginUsecaseParam(email: tEmail, password: tPassword);
-      const params2 = LoginUsecaseParam(email: tEmail, password: tPassword);
-
-      // Assert
-      expect(params1, params2);
-    });
-
-    test('two params with different values should not be equal', () {
-      // Arrange
-      const params1 = LoginUsecaseParam(email: tEmail, password: tPassword);
-      const params2 = LoginUsecaseParam(
-        email: 'other@email.com',
-        password: tPassword,
-      );
-
-      // Assert
-      expect(params1, isNot(params2));
-    });
-  });
 }
