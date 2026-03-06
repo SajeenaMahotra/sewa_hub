@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/sensors/location/location_picker_screen.dart';
 import 'package:sewa_hub/core/sensors/shake/emergency_booking_dialog.dart';
 import 'package:sewa_hub/core/sensors/shake/shake_mixin.dart';
@@ -74,7 +75,7 @@ class _CreateBookingPageState extends ConsumerState<CreateBookingPage>
   String _resolveImageUrl(String? path) {
     if (path == null || path.isEmpty) return '';
     if (path.startsWith('http')) return path;
-    return 'http://10.0.2.2:5050$path';
+    return '${ApiEndpoints.mediaBaseUrl}${Uri.encodeFull(path)}';
   }
 
   String _initials(String? name) {

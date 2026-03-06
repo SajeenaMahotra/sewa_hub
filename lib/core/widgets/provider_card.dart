@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/widgets/primary_button.dart';
 import 'package:sewa_hub/features/provider/domain/entities/provider_entity.dart';
 
@@ -41,7 +42,7 @@ class _ProviderCardState extends State<ProviderCard>
   String _resolveImageUrl(String? path) {
     if (path == null || path.isEmpty) return '';
     if (path.startsWith('http')) return path;
-    return 'http://10.0.2.2:5050$path';
+    return '${ApiEndpoints.mediaBaseUrl}${Uri.encodeFull(path)}';
   }
 
   String get _imageUrl => _resolveImageUrl(

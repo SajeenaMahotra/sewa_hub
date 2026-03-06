@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
 import 'package:sewa_hub/core/widgets/dotted_background.dart';
 import 'package:sewa_hub/features/booking/presentation/state/booking_state.dart';
@@ -35,7 +36,7 @@ class BookingSummaryPage extends ConsumerWidget {
   String _resolveImageUrl(String? path) {
     if (path == null || path.isEmpty) return '';
     if (path.startsWith('http')) return path;
-    return 'http://10.0.2.2:5050$path';
+    return '${ApiEndpoints.mediaBaseUrl}${Uri.encodeFull(path)}';
   }
 
   String _initials(String? name) {

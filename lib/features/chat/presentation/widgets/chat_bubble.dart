@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/features/chat/domain/entities/message_entity.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -22,7 +23,7 @@ class ChatBubble extends StatelessWidget {
     final img = message.sender.imageUrl ?? '';
     if (img.isEmpty) return '';
     if (img.startsWith('http')) return img;
-    return 'http://10.0.2.2:5050$img';
+    return '${ApiEndpoints.mediaBaseUrl}$img';
   }
 
   String _initials(String name) {

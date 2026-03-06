@@ -9,27 +9,20 @@ class ApiEndpoints {
 
   static const String compIpAddress = "192.168.1.76";
 
-  // Base URL R
-  // static const String baseUrl = 'http://10.0.2.2:5050/api/';
-  // //static const String baseUrl = 'http://localhost:3000/api/v1';
-  // // For Android Emulator use: 'http://10.0.2.2:3000/api/v1'
-  // // For iOS Simulator use: 'http://localhost:5000/api/v1'
-  // // For Physical Device use your computer's IP: 'http://192.168.x.x:5000/api/v1'
-
   static String get baseUrl {
-    if (isPhysicalDevice) {
-      return 'http://$compIpAddress:5050/api/';
-    }
-    // android
-    if (kIsWeb) {
-      return 'http://localhost:5050/api/';
-    } else if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5050/api/';
-    } else if (Platform.isIOS) {
-      return 'http://localhost:5050/api/';
-    } else {
-      return 'http://localhost:5050/api/';
-    }
+    if (isPhysicalDevice) return 'http://$compIpAddress:5050/api/';
+    if (kIsWeb) return 'http://localhost:5050/api/';
+    if (Platform.isAndroid) return 'http://10.0.2.2:5050/api/';
+    if (Platform.isIOS) return 'http://localhost:5050/api/';
+    return 'http://localhost:5050/api/';
+  }
+
+  static String get mediaBaseUrl {
+    if (isPhysicalDevice) return 'http://$compIpAddress:5050';
+    if (kIsWeb) return 'http://localhost:5050';
+    if (Platform.isAndroid) return 'http://10.0.2.2:5050';
+    if (Platform.isIOS) return 'http://localhost:5050';
+    return 'http://localhost:5050';
   }
 
   static const Duration connectionTimeout = Duration(seconds: 30);
@@ -40,8 +33,8 @@ class ApiEndpoints {
   static const String register = 'auth/register';
   static const String login = 'auth/login';
   static const String googleAuth = '/auth/google';
-  static const String sendResetPasswordEmail ='/auth/send-reset-password-email';
-  static const String resetPassword = '/auth/reset-password'; // + /:token
+  static const String sendResetPasswordEmail = '/auth/send-reset-password-email';
+  static const String resetPassword = '/auth/reset-password';
   static const String changePassword = '/auth/change-password';
   static const String googleTokenLogin = 'auth/google/token';
 
@@ -50,9 +43,8 @@ class ApiEndpoints {
   static const String updateProfile = 'auth/update-profile';
 
   // ================= Provider Endpoints =================
-  static const String getAllProviders =
-      'provider'; // GET /api/provider?page=1&size=12&categoryId=...
-  static const String getProviderById = 'provider'; // GET /api/provider/:id
+  static const String getAllProviders = 'provider';
+  static const String getProviderById = 'provider';
 
   // ================= Booking Endpoints =================
   static const String createBooking = 'bookings';
@@ -64,10 +56,8 @@ class ApiEndpoints {
   static String rateProvider(String id) => 'provider/rate/$id';
 
   // ================= Chat Endpoints =================
-  static const String sendMessage = 'chat'; 
-  static String getMessages(String bookingId) =>
-      'chat/$bookingId'; 
-  static String markAsRead(String bookingId) => 'chat/$bookingId/read'; 
-  static String unreadCount(String bookingId) =>
-      'chat/$bookingId/unread'; 
+  static const String sendMessage = 'chat';
+  static String getMessages(String bookingId) => 'chat/$bookingId';
+  static String markAsRead(String bookingId) => 'chat/$bookingId/read';
+  static String unreadCount(String bookingId) => 'chat/$bookingId/unread';
 }

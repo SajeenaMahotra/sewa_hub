@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/features/booking/domain/entities/booking_entity.dart';
 import 'package:sewa_hub/features/booking/presentation/pages/booking_detail_page.dart';
 import 'package:sewa_hub/features/booking/presentation/widgets/booking_status_badge.dart';
@@ -12,13 +13,9 @@ class BookingCard extends ConsumerWidget {
   final BookingEntity booking;
   final VoidCallback? onCancel;
 
-  const BookingCard({
-    super.key,
-    required this.booking,
-    this.onCancel,
-  });
+  const BookingCard({super.key, required this.booking, this.onCancel});
 
-  static const _orange      = Color(0xFFFF6B35);
+  static const _orange = Color(0xFFFF6B35);
   static const _textPrimary = Color(0xFF0F172A);
 
   String get _providerName {
@@ -35,7 +32,7 @@ class BookingCard extends ConsumerWidget {
       if (user is Map) {
         final img = user['imageUrl']?.toString() ?? '';
         if (img.isEmpty) return '';
-        return img.startsWith('http') ? img : 'http://10.0.2.2:5050$img';
+        return img.startsWith('http') ? img : '${ApiEndpoints.baseUrl.replaceAll('/api/', '')}$img';
       }
     }
     return '';
@@ -59,8 +56,8 @@ class BookingCard extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (_) => ChatPage(
-          bookingId:     _bookingId,
-          providerName:  _providerName,
+          bookingId: _bookingId,
+          providerName: _providerName,
           providerImage: _providerImage,
         ),
       ),
@@ -71,7 +68,7 @@ class BookingCard extends ConsumerWidget {
     showRatingDialog(
       context,
       ref,
-      bookingId:    _bookingId,
+      bookingId: _bookingId,
       providerName: _providerName,
     );
   }
@@ -83,9 +80,7 @@ class BookingCard extends ConsumerWidget {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => BookingDetailPage(booking: booking),
-        ),
+        MaterialPageRoute(builder: (_) => BookingDetailPage(booking: booking)),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
@@ -107,9 +102,9 @@ class BookingCard extends ConsumerWidget {
               height: 4,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [Color(0xFFFF6B35), Color(0xFFFF9A6C)]),
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(16)),
+                  colors: [Color(0xFFFF6B35), Color(0xFFFF9A6C)],
+                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
             ),
 
@@ -123,42 +118,58 @@ class BookingCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 44, height: 44,
+                        width: 44,
+                        height: 44,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: const Color(0xFFFFF3EE),
-                          border:
-                              Border.all(color: const Color(0xFFFFDDCC)),
+                          border: Border.all(color: const Color(0xFFFFDDCC)),
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: _providerImage.isNotEmpty
-                            ? Image.network(_providerImage,
+                            ? Image.network(
+                                _providerImage,
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => Center(
-                                    child: Text(_initials(name),
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w800,
-                                            color: _orange))))
-                            : Center(
-                                child: Text(_initials(name),
+                                  child: Text(
+                                    _initials(name),
                                     style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                        color: _orange))),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: _orange,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  _initials(name),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                    color: _orange,
+                                  ),
+                                ),
+                              ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(name,
-                            style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: _textPrimary)),
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: _textPrimary,
+                          ),
+                        ),
                       ),
                       BookingStatusBadge(status: booking.status),
                       const SizedBox(width: 4),
-                      const Icon(Icons.chevron_right_rounded,
-                          size: 18, color: Color(0xFFCBD5E1)),
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        size: 18,
+                        color: Color(0xFFCBD5E1),
+                      ),
                     ],
                   ),
 
@@ -166,8 +177,9 @@ class BookingCard extends ConsumerWidget {
 
                   _InfoRow(
                     icon: Icons.calendar_today_outlined,
-                    text: DateFormat('EEE, MMM d yyyy • h:mm a')
-                        .format(booking.scheduledAt),
+                    text: DateFormat(
+                      'EEE, MMM d yyyy • h:mm a',
+                    ).format(booking.scheduledAt),
                   ),
                   const SizedBox(height: 5),
                   _InfoRow(
@@ -182,58 +194,71 @@ class BookingCard extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Severity + price
-                      Row(children: [
-                        _SeverityChip(severity: booking.severity),
-                        const SizedBox(width: 8),
-                        Text(
-                          'NPR ${booking.effectivePricePerHour.toStringAsFixed(0)}/hr',
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: _orange),
+                      Flexible(
+                        // ← wrap in Flexible
+                        child: Row(
+                          children: [
+                            _SeverityChip(severity: booking.severity),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              // ← also wrap the Text
+                              child: Text(
+                                'NPR ${booking.effectivePricePerHour.toStringAsFixed(0)}/hr',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                  color: _orange,
+                                ),
+                                overflow: TextOverflow
+                                    .ellipsis, // ← graceful truncation
+                              ),
+                            ),
+                          ],
                         ),
-                      ]),
+                      ),
 
                       // Action buttons
-                      Row(children: [
-                        // Message (active bookings)
-                        if (_canChat)
-                          _ActionButton(
-                            icon: Icons.chat_bubble_outline_rounded,
-                            label: 'Message',
-                            color: _orange,
-                            bgColor: const Color(0xFFFFF3EE),
-                            borderColor: const Color(0xFFFFDDCC),
-                            onTap: () => _openChat(context),
-                          ),
+                      Row(
+                        children: [
+                          // Message (active bookings)
+                          if (_canChat)
+                            _ActionButton(
+                              icon: Icons.chat_bubble_outline_rounded,
+                              label: 'Message',
+                              color: _orange,
+                              bgColor: const Color(0xFFFFF3EE),
+                              borderColor: const Color(0xFFFFDDCC),
+                              onTap: () => _openChat(context),
+                            ),
 
-                        // Rate (completed bookings) ← now actually works
-                        if (_isCompleted) ...[
-                          if (_canChat) const SizedBox(width: 8),
-                          _ActionButton(
-                            icon: Icons.star_outline_rounded,
-                            label: 'Rate',
-                            color: const Color(0xFFF59E0B),
-                            bgColor: const Color(0xFFFFFBEB),
-                            borderColor: const Color(0xFFFDE68A),
-                            onTap: () => _openRating(context, ref), // ← fixed
-                          ),
-                        ],
+                          // Rate (completed bookings) ← now actually works
+                          if (_isCompleted) ...[
+                            if (_canChat) const SizedBox(width: 8),
+                            _ActionButton(
+                              icon: Icons.star_outline_rounded,
+                              label: 'Rate',
+                              color: const Color(0xFFF59E0B),
+                              bgColor: const Color(0xFFFFFBEB),
+                              borderColor: const Color(0xFFFDE68A),
+                              onTap: () => _openRating(context, ref), // ← fixed
+                            ),
+                          ],
 
-                        // Cancel (pending bookings)
-                        if (booking.status == 'pending' &&
-                            onCancel != null) ...[
-                          const SizedBox(width: 8),
-                          _ActionButton(
-                            icon: null,
-                            label: 'Cancel',
-                            color: const Color(0xFFEF4444),
-                            bgColor: Colors.transparent,
-                            borderColor: const Color(0xFFEF4444),
-                            onTap: onCancel!,
-                          ),
+                          // Cancel (pending bookings)
+                          if (booking.status == 'pending' &&
+                              onCancel != null) ...[
+                            const SizedBox(width: 8),
+                            _ActionButton(
+                              icon: null,
+                              label: 'Cancel',
+                              color: const Color(0xFFEF4444),
+                              bgColor: Colors.transparent,
+                              borderColor: const Color(0xFFEF4444),
+                              onTap: onCancel!,
+                            ),
+                          ],
                         ],
-                      ]),
+                      ),
                     ],
                   ),
                 ],
@@ -250,10 +275,10 @@ class BookingCard extends ConsumerWidget {
 
 class _ActionButton extends StatelessWidget {
   final IconData? icon;
-  final String    label;
-  final Color     color;
-  final Color     bgColor;
-  final Color     borderColor;
+  final String label;
+  final Color color;
+  final Color bgColor;
+  final Color borderColor;
   final VoidCallback onTap;
 
   const _ActionButton({
@@ -283,11 +308,14 @@ class _ActionButton extends StatelessWidget {
               Icon(icon, size: 13, color: color),
               const SizedBox(width: 4),
             ],
-            Text(label,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: color)),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+            ),
           ],
         ),
       ),
@@ -297,7 +325,7 @@ class _ActionButton extends StatelessWidget {
 
 class _InfoRow extends StatelessWidget {
   final IconData icon;
-  final String   text;
+  final String text;
   const _InfoRow({required this.icon, required this.text});
 
   @override
@@ -308,11 +336,12 @@ class _InfoRow extends StatelessWidget {
         Icon(icon, size: 14, color: const Color(0xFF94A3B8)),
         const SizedBox(width: 6),
         Expanded(
-          child: Text(text,
-              style: const TextStyle(
-                  fontSize: 12, color: Color(0xFF64748B)),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
@@ -325,9 +354,12 @@ class _SeverityChip extends StatelessWidget {
 
   Color get _color {
     switch (severity) {
-      case 'urgent':    return const Color(0xFFEF4444);
-      case 'emergency': return const Color(0xFFF59E0B);
-      default:          return const Color(0xFF22C55E);
+      case 'urgent':
+        return const Color(0xFFEF4444);
+      case 'emergency':
+        return const Color(0xFFF59E0B);
+      default:
+        return const Color(0xFF22C55E);
     }
   }
 
@@ -342,7 +374,10 @@ class _SeverityChip extends StatelessWidget {
       child: Text(
         severity[0].toUpperCase() + severity.substring(1),
         style: TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w600, color: _color),
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: _color,
+        ),
       ),
     );
   }

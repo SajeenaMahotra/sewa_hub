@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/widgets/dotted_background.dart';
 import 'package:sewa_hub/features/booking/data/repositories/booking_repository.dart';
 import 'package:sewa_hub/features/booking/domain/entities/booking_entity.dart';
@@ -80,7 +81,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         final img = user['imageUrl']?.toString() ?? '';
         if (img.isEmpty) return '';
         if (img.startsWith('http')) return img;
-        return 'http://10.0.2.2:5050$img';
+        return '${ApiEndpoints.mediaBaseUrl}$img';
       }
     }
     return '';
