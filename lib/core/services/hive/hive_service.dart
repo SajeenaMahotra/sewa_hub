@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sewa_hub/core/constants/hive_table_constants.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/auth/data/models/auth_hive_model.dart';
+import 'package:sewa_hub/features/profile/data/models/profile_hive_model.dart';
 
 final hiveServiceProvider = Provider<HiveService>((ref) {
   final userSessionService = ref.read(userSessionServiceProvider);
@@ -11,13 +12,11 @@ final hiveServiceProvider = Provider<HiveService>((ref) {
 });
 
 class HiveService {
-
   final UserSessionService _userSessionService;
 
-  HiveService({
-    required UserSessionService userSessionService,
-  }) : _userSessionService = userSessionService;
-  
+  HiveService({required UserSessionService userSessionService})
+    : _userSessionService = userSessionService;
+
   // ==================== Init ====================
 
   Future<void> init() async {
@@ -32,12 +31,17 @@ class HiveService {
     if (!Hive.isAdapterRegistered(HiveTableConstant.authTypeId)) {
       Hive.registerAdapter(AuthHiveModelAdapter());
     }
+
+    if (!Hive.isAdapterRegistered(HiveTableConstant.profileTypeId)) {
+      Hive.registerAdapter(ProfileHiveModelAdapter());
+    }
   }
 
   Future<void> _openBoxes() async {
     await Hive.openBox<AuthHiveModel>(HiveTableConstant.authTable);
-  }
 
+    await Hive.openBox<ProfileHiveModel>(HiveTableConstant.profileTable);
+  }
 
   // ==================== Auth ====================
 
@@ -82,6 +86,31 @@ class HiveService {
     await _userSessionService.clearUserSession();
   }
 
+  // ==================== Profile ====================
+
+  Box<ProfileHiveModel> get _profileBox =>
+      Hive.box<ProfileHiveModel>(HiveTableConstant.profileTable);
+
+  /// Save or update cached profile (keyed by email)
+  Future<void> saveProfile(ProfileHiveModel profile) async {
+    await _profileBox.put(profile.email, profile);
+  }
+
+  /// Get cached profile by email
+  ProfileHiveModel? getProfile(String email) {
+    return _profileBox.get(email);
+  }
+
+  /// Clear cached profile (on logout)
+  Future<void> clearProfile(String email) async {
+    await _profileBox.delete(email);
+  }
+
+  /// Clear all cached profiles
+  Future<void> clearAllProfiles() async {
+    await _profileBox.clear();
+  }
+
   // ==================== Utils ====================
 
   Future<void> close() async {
@@ -90,9 +119,7 @@ class HiveService {
 
   //is email exists
   bool isEmailExists(String email) {
-    final user = _authBox.values.where(
-      (user) => user.email == email,
-    );
+    final user = _authBox.values.where((user) => user.email == email);
     return user.isNotEmpty;
   }
 }

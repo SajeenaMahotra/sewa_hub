@@ -73,7 +73,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // Clear fields
         _emailController.clear();
         _passwordController.clear();
-
         AppRoutes.pushReplacement(context, const DashboardScreen());
       }
     });

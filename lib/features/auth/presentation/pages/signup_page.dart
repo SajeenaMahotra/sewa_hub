@@ -9,6 +9,7 @@ import 'package:sewa_hub/core/widgets/button2.dart';
 import 'package:sewa_hub/core/widgets/custom_text_field.dart';
 import 'package:sewa_hub/features/auth/presentation/state/auth_state.dart';
 import 'package:sewa_hub/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:sewa_hub/features/dashboard/presentation/pages/dashboard_screen.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -68,6 +69,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         _confirmpasswordController.clear();
         AppRoutes.pushReplacement(context, const LoginScreen());
       }
+
+      if (next.status == AuthStatus.authenticated) {
+    AppRoutes.pushReplacement(context, const DashboardScreen());
+  }
     });
 
     ref.watch(authViewModelProvider);

@@ -28,9 +28,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     {'title': 'Plumbing',    'imagePath': 'assets/icons/plumbing.png'},
     {'title': 'Electrician', 'imagePath': 'assets/icons/electrician.png'},
     {'title': 'Carpenter',   'imagePath': 'assets/icons/carpenter.png'},
-    {'title': 'AC Repair',   'imagePath': 'assets/icons/acrepair.png'},
-    {'title': 'Painter',     'imagePath': 'assets/icons/paintroller.png'},
-    {'title': 'Gardening',   'imagePath': 'assets/icons/gardening.png'},
+    {'title': 'AC Repair',   'imagePath': 'assets/icons/repair.png'},
+    {'title': 'Painter',     'imagePath': 'assets/icons/painter.png'},
+    {'title': 'Gardening',   'imagePath': 'assets/icons/gardener.png'},
+    {'title': 'Fence Repair',     'imagePath': 'assets/icons/fencerepair.png'},
+    {'title': 'Roofing',     'imagePath': 'assets/icons/roofing.png'},
+    {'title': 'Lawn Care',     'imagePath': 'assets/icons/lawn.png'},
     {'title': 'Laundry',     'imagePath': 'assets/icons/laundry.png'},
   ];
 
