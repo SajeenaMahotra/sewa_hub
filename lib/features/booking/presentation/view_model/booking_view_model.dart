@@ -28,7 +28,7 @@ class BookingViewModel extends Notifier<BookingState> {
     required String providerId,
     required DateTime scheduledAt,
     required String address,
-    required String phoneNumber,      // ← new
+    required String phoneNumber,      
     String? note,
     String severity = 'normal',
   }) async {

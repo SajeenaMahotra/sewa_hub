@@ -364,7 +364,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
     final cardHeight = cardWidth * 1.18;
 
-    // Sort providers: highest rating → highest ratingCount → original order
     final topProviders = _topRated(state.providers);
 
     return Column(
