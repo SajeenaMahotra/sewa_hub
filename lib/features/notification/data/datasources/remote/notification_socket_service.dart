@@ -9,8 +9,13 @@ import 'package:sewa_hub/features/notification/domain/entities/notification_enti
 final notificationSocketServiceProvider = Provider<NotificationSocketService>((
   ref,
 ) {
-  final session = ref.watch(userSessionServiceProvider);
-  return NotificationSocketService(sessionService: session);
+  ref.keepAlive();
+  final session = ref.read(userSessionServiceProvider); // ← read, not watch
+  final service = NotificationSocketService(sessionService: session);
+
+  ref.onDispose(() => service.disconnect());
+  
+  return service;
 });
 
 class NotificationSocketService {

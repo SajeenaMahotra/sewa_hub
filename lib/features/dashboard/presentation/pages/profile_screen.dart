@@ -111,7 +111,9 @@ class ProfileScreen extends ConsumerWidget {
                               AppRoutes.push(context, const EditProfilePage()),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 28, vertical: 9),
+                              horizontal: 28,
+                              vertical: 9,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(24),
@@ -166,7 +168,7 @@ class ProfileScreen extends ConsumerWidget {
                     // Account section
                     const _SectionLabel('Account'),
                     const SizedBox(height: 8),
-                    
+
                     // Log Out
                     _MenuItem(
                       icon: Icons.logout_rounded,
@@ -177,14 +179,22 @@ class ProfileScreen extends ConsumerWidget {
                         final authRepo = ref.read(authRepositoryProvider);
                         final result = await authRepo.logOut();
                         result.fold(
-                          (failure) => SnackbarUtils.showError(context,
-                              message: failure.message),
+                          (failure) => SnackbarUtils.showError(
+                            context,
+                            message: failure.message,
+                          ),
                           (success) {
                             if (success) {
-                              SnackbarUtils.showSuccess(context,
-                                  message: 'Logged out successfully');
-                              AppRoutes.pushReplacement(
-                                  context, const LoginScreen());
+                              SnackbarUtils.showSuccess(
+                                context,
+                                message: 'Logged out successfully',
+                              );
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginScreen(),
+                                ),
+                                (route) => false,
+                              );
                             }
                           },
                         );
@@ -230,18 +240,18 @@ class _Initials extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        color: Colors.white.withOpacity(0.25),
-        child: Center(
-          child: Text(
-            _text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+    color: Colors.white.withOpacity(0.25),
+    child: Center(
+      child: Text(
+        _text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -250,17 +260,17 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(left: 4),
-        child: Text(
-          label.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF94A3B8),
-            letterSpacing: 1.0,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.only(left: 4),
+    child: Text(
+      label.toUpperCase(),
+      style: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF94A3B8),
+        letterSpacing: 1.0,
+      ),
+    ),
+  );
 }
 
 class _MenuItem extends StatelessWidget {
@@ -294,9 +304,7 @@ class _MenuItem extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         onTap: onTap,
         leading: Container(
           width: 36,

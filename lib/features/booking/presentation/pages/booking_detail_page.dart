@@ -40,17 +40,17 @@ class BookingDetailPage extends ConsumerWidget {
   }
 
   String get _providerImage {
-    if (booking.provider is Map) {
-      final user = (booking.provider as Map)['Useruser_id'];
-      if (user is Map) {
-        final img = user['imageUrl']?.toString() ?? '';
-        if (img.isEmpty) return '';
-        if (img.startsWith('http')) return img;
-        return '${ApiEndpoints.mediaBaseUrl}$img';
-      }
+  if (booking.provider is Map) {
+    final p = booking.provider as Map;
+    final img = p['imageUrl']?.toString() ?? '';
+    if (img.isNotEmpty) {
+      return img.startsWith('http')
+          ? img
+          : '${ApiEndpoints.mediaBaseUrl}${Uri.encodeFull(img)}';
     }
-    return '';
   }
+  return '';
+}
 
   String _initials(String name) {
     final parts = name.trim().split(' ');

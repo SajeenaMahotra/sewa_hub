@@ -35,13 +35,10 @@ class NotificationViewModel extends Notifier<NotificationState> {
 
     _socketService.connect();
 
-    // Clean up on dispose
-    ref.onDispose(() => _socketService.disconnect());
-
     return const NotificationState();
   }
 
-  // ── Fetch from DB ─────────────────────────────────────────────────────────
+  // ── Fetch from DB 
   Future<void> fetchNotifications() async {
     state = state.copyWith(status: NotificationStatus.loading);
 
