@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sewa_hub/app/routes/app_routes.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
+import 'package:sewa_hub/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:sewa_hub/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:sewa_hub/features/auth/presentation/pages/signup_page.dart';
 import 'package:sewa_hub/core/widgets/button1.dart';
@@ -33,10 +35,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _validateAndLogin() async {
     if (_formKey.currentState!.validate()) {
       // Form is valid, proceed with login
-      ref.read(authViewModelProvider.notifier).login(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+      ref
+          .read(authViewModelProvider.notifier)
+          .login(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
     } else {
       // Form validation failed, show error snackbar
       SnackbarUtils.showError(
@@ -69,11 +73,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // Clear fields
         _emailController.clear();
         _passwordController.clear();
-
-        AppRoutes.pushReplacement(
-          context,
-          const DashboardScreen(),
-        );
+        AppRoutes.pushReplacement(context, const DashboardScreen());
       }
     });
 
@@ -173,7 +173,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                             child: GestureDetector(
                               onTap: () {
-                                // Add forgot password logic here
+                                AppRoutes.push(
+                                  context,
+                                  const ForgotPasswordPage(),
+                                );
                               },
                               child: Text(
                                 "Forgot Password?",
@@ -199,7 +202,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 20),
                         const Text(
-                          "Or continue with",
+                          "OR",
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(255, 120, 120, 120),
@@ -207,27 +210,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 25),
                         // Google and Apple Buttons
-                        SingleChildScrollView(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Button1(
-                                logoPath: 'assets/images/google_logo.png',
-                                onPressed: () {
-                                  // Add Google login logic
-                                },
-                                logoSize: 60,
-                              ),
-                              const SizedBox(width: 16),
-                              Button1(
-                                logoPath: 'assets/images/apple_logo.png',
-                                onPressed: () {
-                                  // Add Apple login logic
-                                },
-                                logoSize: 60,
-                              ),
-                            ],
-                          ),
+                        Button1(
+                          logoPath: 'assets/images/google_logo.png',
+                          text: 'Continue with Google',
+                          onPressed: () async {
+                            try {
+                              await GoogleSignIn.instance.initialize(
+                                serverClientId:
+                                    "483781820143-nkmm0bn3dsq9enqms6b3betvldjnsn0k.apps.googleusercontent.com", // from Google Console → Web client
+                              );
+                              final userData = await GoogleSignIn.instance
+                                  .authenticate(scopeHint: ['email']);
+                              final idToken = userData.authentication.idToken;
+                              if (idToken == null)
+                                throw Exception('No ID token');
+                              ref
+                                  .read(authViewModelProvider.notifier)
+                                  .loginWithGoogle(idToken);
+                            } catch (e) {
+                              SnackbarUtils.showError(
+                                context,
+                                message: 'Google login failed: $e',
+                              );
+                            }
+                          },
                         ),
                         const SizedBox(height: 30),
                         // Don't have account link
@@ -240,7 +246,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                               AppRoutes.push(context,const SignupScreen(),);
+                                AppRoutes.push(context, const SignupScreen());
                               },
                               child: const Text(
                                 "Create One",

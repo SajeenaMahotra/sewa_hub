@@ -7,13 +7,14 @@ class BookingEntity extends Equatable {
   final DateTime scheduledAt;
   final String address;
   final String? note;
+  final String phoneNumber;          
   final double pricePerHour;
   final String severity;
   final double effectivePricePerHour;
   final String status;
   final DateTime? createdAt;
-  final dynamic user;     // populated user object
-  final dynamic provider; // populated provider object
+  final dynamic user;
+  final dynamic provider;
 
   const BookingEntity({
     this.id,
@@ -22,6 +23,7 @@ class BookingEntity extends Equatable {
     required this.scheduledAt,
     required this.address,
     this.note,
+    required this.phoneNumber,       // ← new
     required this.pricePerHour,
     this.severity = 'normal',
     required this.effectivePricePerHour,
@@ -33,16 +35,8 @@ class BookingEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        providerId,
-        scheduledAt,
-        address,
-        note,
-        pricePerHour,
-        severity,
-        effectivePricePerHour,
-        status,
-        createdAt,
+        id, userId, providerId, scheduledAt, address,
+        note, phoneNumber, pricePerHour, severity,
+        effectivePricePerHour, status, createdAt,
       ];
 }

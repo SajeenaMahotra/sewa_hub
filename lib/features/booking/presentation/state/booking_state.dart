@@ -7,6 +7,7 @@ enum BookingStatus {
   success,
   listLoaded,
   cancelled,
+  rated,
   error,
 }
 

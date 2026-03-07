@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/utils/snackbar_utils.dart';
 import 'package:sewa_hub/core/widgets/dotted_background.dart';
 import 'package:sewa_hub/features/booking/domain/entities/booking_entity.dart';
@@ -39,17 +40,17 @@ class BookingDetailPage extends ConsumerWidget {
   }
 
   String get _providerImage {
-    if (booking.provider is Map) {
-      final user = (booking.provider as Map)['Useruser_id'];
-      if (user is Map) {
-        final img = user['imageUrl']?.toString() ?? '';
-        if (img.isEmpty) return '';
-        if (img.startsWith('http')) return img;
-        return 'http://10.0.2.2:5050$img';
-      }
+  if (booking.provider is Map) {
+    final p = booking.provider as Map;
+    final img = p['imageUrl']?.toString() ?? '';
+    if (img.isNotEmpty) {
+      return img.startsWith('http')
+          ? img
+          : '${ApiEndpoints.mediaBaseUrl}${Uri.encodeFull(img)}';
     }
-    return '';
   }
+  return '';
+}
 
   String _initials(String name) {
     final parts = name.trim().split(' ');

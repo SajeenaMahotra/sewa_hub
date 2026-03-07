@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/chat/presentation/state/chat_state.dart';
 import 'package:sewa_hub/features/chat/presentation/view_model/chat_view_model.dart';
@@ -85,7 +86,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   String _avatarUrl(String? img) {
     if (img == null || img.isEmpty) return '';
     if (img.startsWith('http')) return img;
-    return 'http://10.0.2.2:5050$img';
+    return '${ApiEndpoints.mediaBaseUrl}$img';
   }
 
   String _initials(String name) {

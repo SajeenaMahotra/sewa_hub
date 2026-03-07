@@ -8,6 +8,8 @@ enum AuthStatus {
   loading,
   registered,
   error,
+  forgotPasswordSent,  
+  passwordChanged,
 }
 class AuthState extends Equatable {
   final AuthStatus status;

@@ -5,6 +5,7 @@ import 'package:sewa_hub/core/services/storage/token_service.dart';
 
 final socketServiceProvider = Provider<SocketService>((ref) {
   final token = ref.read(tokenServiceProvider).getToken() ?? '';
+  print('[Socket] token: ${token.isEmpty ? "EMPTY!" : "${token.substring(0, 20)}..."}');
   return SocketService(token: token);
 });
 
@@ -12,15 +13,23 @@ class SocketService {
   IO.Socket? _socket;
   final String _token;
 
+  String? _pendingRoom;
+  final Map<String, List<void Function(dynamic)>> _handlers = {};
+
   SocketService({required String token}) : _token = token;
 
   bool get isConnected => _socket?.connected ?? false;
 
   void connect() {
-    if (isConnected) return;
+    if (_socket != null) {
+      if (!isConnected) _socket!.connect();
+      return;
+    }
 
-    // Strip /api/ suffix — socket connects to root server URL
-    final socketUrl = ApiEndpoints.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
+    // Strip /api suffix and append /chat namespace
+    final base = ApiEndpoints.baseUrl.replaceAll(RegExp(r'/api/?$'), '');
+    final socketUrl = '$base/chat'; // ← /chat namespace
+    print('[Socket] Connecting to: $socketUrl');
 
     _socket = IO.io(
       socketUrl,
@@ -29,30 +38,63 @@ class SocketService {
           .setPath('/socket.io')
           .setAuth({'token': _token})
           .disableAutoConnect()
+          .enableReconnection()
+          .setReconnectionAttempts(5)
           .build(),
     );
 
-    _socket!.connect();
+    _socket!.onConnect((_) {
+      print('[Socket] ✅ Connected: ${_socket!.id}');
+      // Re-attach all handlers after reconnect
+      _handlers.forEach((event, handlers) {
+        for (final h in handlers) {
+          _socket!.on(event, h);
+        }
+      });
+      // Join queued room
+      if (_pendingRoom != null) {
+        print('[Socket] Joining pending room: $_pendingRoom');
+        _socket!.emit('join_room', {'bookingId': _pendingRoom});
+        _pendingRoom = null;
+      }
+    });
 
-    _socket!.onConnect((_) => print('[Socket] ✅ Connected: ${_socket!.id}'));
-    _socket!.onDisconnect((_) => print('[Socket] Disconnected'));
+    _socket!.onDisconnect((r) => print('[Socket] ❌ Disconnected: $r'));
     _socket!.onConnectError((e) => print('[Socket] ❌ Connect error: $e'));
-    _socket!.on('new_message', (d) => print('[Socket] 📩 new_message raw: $d'));
+    _socket!.onError((e) => print('[Socket] ❌ Error: $e'));
+
+    // Debug: log ALL incoming events
+    _socket!.onAny((event, data) =>
+        print('[Socket] 📨 EVENT: $event | DATA: $data'));
+
+    _socket!.connect();
   }
 
   void disconnect() {
     _socket?.disconnect();
+    _socket?.dispose();
     _socket = null;
+    _handlers.clear();
+    _pendingRoom = null;
   }
 
-  void joinRoom(String bookingId) =>
-      _socket?.emit('join_room', {'bookingId': bookingId});
+  void joinRoom(String bookingId) {
+    if (isConnected) {
+      print('[Socket] Joining room: $bookingId');
+      _socket!.emit('join_room', {'bookingId': bookingId});
+    } else {
+      print('[Socket] Queuing room: $bookingId');
+      _pendingRoom = bookingId;
+    }
+  }
 
   void leaveRoom(String bookingId) =>
       _socket?.emit('leave_room', {'bookingId': bookingId});
 
-  void sendMessage(String bookingId, String content) =>
-      _socket?.emit('send_message', {'bookingId': bookingId, 'content': content});
+  void sendMessage(String bookingId, String content) {
+    print('[Socket] send_message → bookingId=$bookingId content=$content connected=$isConnected');
+    _socket?.emit('send_message', {'bookingId': bookingId, 'content': content});
+  }
 
   void markRead(String bookingId) =>
       _socket?.emit('mark_read', {'bookingId': bookingId});
@@ -63,25 +105,20 @@ class SocketService {
   void typingStop(String bookingId) =>
       _socket?.emit('typing_stop', {'bookingId': bookingId});
 
-  // ── Listeners ─────────────────────────────────────────────────────────────
+  void _addHandler(String event, void Function(dynamic) handler) {
+    _handlers.putIfAbsent(event, () => []).add(handler);
+    if (isConnected) _socket?.on(event, handler);
+  }
 
-  void onNewMessage(void Function(dynamic) handler) =>
-      _socket?.on('new_message', handler);
+  void onNewMessage(void Function(dynamic) h) => _addHandler('new_message', h);
+  void onRoomJoined(void Function(dynamic) h) => _addHandler('room_joined', h);
+  void onMessagesRead(void Function(dynamic) h) => _addHandler('messages_read', h);
+  void onUserTyping(void Function(dynamic) h) => _addHandler('user_typing', h);
+  void onUserStoppedTyping(void Function(dynamic) h) => _addHandler('user_stopped_typing', h);
+  void onError(void Function(dynamic) h) => _addHandler('error', h);
 
-  void onRoomJoined(void Function(dynamic) handler) =>
-      _socket?.on('room_joined', handler);
-
-  void onMessagesRead(void Function(dynamic) handler) =>
-      _socket?.on('messages_read', handler);
-
-  void onUserTyping(void Function(dynamic) handler) =>
-      _socket?.on('user_typing', handler);
-
-  void onUserStoppedTyping(void Function(dynamic) handler) =>
-      _socket?.on('user_stopped_typing', handler);
-
-  void onError(void Function(dynamic) handler) =>
-      _socket?.on('error', handler);
-
-  void off(String event) => _socket?.off(event);
+  void off(String event) {
+    _handlers.remove(event);
+    _socket?.off(event);
+  }
 }

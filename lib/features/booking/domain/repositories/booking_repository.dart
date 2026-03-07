@@ -7,6 +7,7 @@ abstract class IBookingRepository {
     required String providerId,
     required DateTime scheduledAt,
     required String address,
+    required String phoneNumber,     // ← new
     String? note,
     String severity,
   });
@@ -27,6 +28,11 @@ abstract class IBookingRepository {
   });
 
   Future<Either<Failure, BookingEntity>> cancelBooking(String bookingId);
-
   Future<Either<Failure, BookingEntity>> getBookingById(String bookingId);
+
+  // ── Rating ──────────────────────────────────────────────────────────────
+  Future<Either<Failure, void>> rateProvider({
+    required String bookingId,
+    required int rating,            // 1–5
+  });
 }

@@ -32,7 +32,7 @@ class ProviderEntity extends Equatable {
   final int experienceYears;
   final int isVerified;
   final double rating;
-  final int reviewCount;
+  final int ratingCount;       // ← renamed from reviewCount (matches backend)
   final String? bio;
   final String? phone;
   final String? address;
@@ -46,7 +46,7 @@ class ProviderEntity extends Equatable {
     required this.experienceYears,
     required this.isVerified,
     required this.rating,
-    required this.reviewCount,
+    required this.ratingCount,   // ← updated
     this.bio,
     this.phone,
     this.address,
@@ -62,7 +62,7 @@ class ProviderEntity extends Equatable {
         experienceYears,
         isVerified,
         rating,
-        reviewCount,
+        ratingCount,             // ← updated
         bio,
         phone,
         address,

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:sewa_hub/core/services/storage/user_session_service.dart';
 import 'package:sewa_hub/features/notification/data/models/notification_api_model.dart';
@@ -8,8 +9,13 @@ import 'package:sewa_hub/features/notification/domain/entities/notification_enti
 final notificationSocketServiceProvider = Provider<NotificationSocketService>((
   ref,
 ) {
-  final session = ref.watch(userSessionServiceProvider);
-  return NotificationSocketService(sessionService: session);
+  ref.keepAlive();
+  final session = ref.read(userSessionServiceProvider); // ← read, not watch
+  final service = NotificationSocketService(sessionService: session);
+
+  ref.onDispose(() => service.disconnect());
+  
+  return service;
 });
 
 class NotificationSocketService {
@@ -25,10 +31,7 @@ class NotificationSocketService {
   void connect() {
     if (_socket != null && _socket!.connected) return;
 
-    const baseUrl = String.fromEnvironment(
-      'API_BASE_URL',
-      defaultValue: 'http://10.0.2.2:5050',
-    );
+    final baseUrl = ApiEndpoints.mediaBaseUrl;
 
     _socket = IO.io(
       '$baseUrl/notifications', // ← /notifications namespace

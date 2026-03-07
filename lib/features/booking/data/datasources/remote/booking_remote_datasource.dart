@@ -13,7 +13,6 @@ final bookingRemoteDataSourceProvider =
 
 class BookingRemoteDataSource {
   final ApiClient _apiClient;
-
   BookingRemoteDataSource({required ApiClient apiClient})
       : _apiClient = apiClient;
 
@@ -21,21 +20,23 @@ class BookingRemoteDataSource {
     required String providerId,
     required DateTime scheduledAt,
     required String address,
+    required String phoneNumber,     // ← new
     String? note,
     String severity = 'normal',
   }) async {
     try {
       final response = await _apiClient.post(ApiEndpoints.createBooking, data: {
-        'provider_id': providerId,
+        'provider_id':  providerId,
         'scheduled_at': scheduledAt.toIso8601String(),
-        'address': address,
+        'address':      address,
+        'phone_number': phoneNumber,  // ← new
         if (note != null && note.isNotEmpty) 'note': note,
-        'severity': severity,
+        'severity':     severity,
       });
 
       if (response.data['success'] == true) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        return Right(BookingApiModel.fromJson(data));
+        return Right(BookingApiModel.fromJson(
+            response.data['data'] as Map<String, dynamic>));
       }
       return Left(NetworkFailure(
           error: response.data['message'] ?? 'Failed to create booking'));
@@ -53,7 +54,6 @@ class BookingRemoteDataSource {
         ApiEndpoints.myBookings,
         queryParameters: {'page': page, 'size': size},
       );
-
       if (response.data['success'] == true) {
         final bookings = (response.data['data']['bookings'] as List)
             .map((e) => BookingApiModel.fromJson(e as Map<String, dynamic>))
@@ -76,7 +76,6 @@ class BookingRemoteDataSource {
         ApiEndpoints.providerBookings,
         queryParameters: {'page': page, 'size': size},
       );
-
       if (response.data['success'] == true) {
         final bookings = (response.data['data']['bookings'] as List)
             .map((e) => BookingApiModel.fromJson(e as Map<String, dynamic>))
@@ -99,10 +98,9 @@ class BookingRemoteDataSource {
         ApiEndpoints.bookingStatus(bookingId),
         data: {'status': status},
       );
-
       if (response.data['success'] == true) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        return Right(BookingApiModel.fromJson(data));
+        return Right(BookingApiModel.fromJson(
+            response.data['data'] as Map<String, dynamic>));
       }
       return Left(NetworkFailure(
           error: response.data['message'] ?? 'Failed to update status'));
@@ -116,10 +114,9 @@ class BookingRemoteDataSource {
     try {
       final response =
           await _apiClient.patch(ApiEndpoints.cancelBooking(bookingId));
-
       if (response.data['success'] == true) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        return Right(BookingApiModel.fromJson(data));
+        return Right(BookingApiModel.fromJson(
+            response.data['data'] as Map<String, dynamic>));
       }
       return Left(NetworkFailure(
           error: response.data['message'] ?? 'Failed to cancel booking'));
@@ -133,13 +130,30 @@ class BookingRemoteDataSource {
     try {
       final response =
           await _apiClient.get(ApiEndpoints.bookingById(bookingId));
-
       if (response.data['success'] == true) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        return Right(BookingApiModel.fromJson(data));
+        return Right(BookingApiModel.fromJson(
+            response.data['data'] as Map<String, dynamic>));
       }
       return Left(NetworkFailure(
           error: response.data['message'] ?? 'Booking not found'));
+    } catch (e) {
+      return Left(NetworkFailure(error: e.toString()));
+    }
+  }
+
+  // ── Rate provider ────────────────────────────────────────────────────────
+  Future<Either<Failure, void>> rateProvider({
+    required String bookingId,
+    required int rating,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        ApiEndpoints.rateProvider(bookingId),   
+        data: {'rating': rating},
+      );
+      if (response.data['success'] == true) return const Right(null);
+      return Left(NetworkFailure(
+          error: response.data['message'] ?? 'Failed to submit rating'));
     } catch (e) {
       return Left(NetworkFailure(error: e.toString()));
     }

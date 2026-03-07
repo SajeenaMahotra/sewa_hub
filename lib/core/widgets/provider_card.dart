@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sewa_hub/core/api/api_endpoints.dart';
 import 'package:sewa_hub/core/widgets/primary_button.dart';
 import 'package:sewa_hub/features/provider/domain/entities/provider_entity.dart';
 
@@ -41,7 +42,7 @@ class _ProviderCardState extends State<ProviderCard>
   String _resolveImageUrl(String? path) {
     if (path == null || path.isEmpty) return '';
     if (path.startsWith('http')) return path;
-    return 'http://10.0.2.2:5050$path';
+    return '${ApiEndpoints.mediaBaseUrl}${Uri.encodeFull(path)}';
   }
 
   String get _imageUrl => _resolveImageUrl(
@@ -161,34 +162,37 @@ class _ProviderCardState extends State<ProviderCard>
                 const SizedBox(height: 16),
 
                 // ── Price + Book Now row ──────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Price — always fully visible
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Rs. ${p.pricePerHour.toStringAsFixed(0)}',
-                            style: const TextStyle(
-                              color: Color(0xFFFF6B35),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' /hr',
-                            style: TextStyle(
-                              color: Color(0xFF94A3B8),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    // Price — always fully visible
+    Flexible(                          // ← ADD THIS
+      child: RichText(
+        overflow: TextOverflow.ellipsis, // ← ADD THIS
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Rs. ${p.pricePerHour.toStringAsFixed(0)}',
+              style: const TextStyle(
+                color: Color(0xFFFF6B35),
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.3,
+              ),
+            ),
+            const TextSpan(
+              text: ' /hr',
+              style: TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),           // ← CLOSE Flexible child
+    ),             // ← CLOSE Flexible
 
                     // Compact fixed-width button
                     SizedBox(
