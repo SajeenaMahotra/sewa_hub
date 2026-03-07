@@ -436,7 +436,7 @@ class _NoResults extends StatelessWidget {
   }
 }
 
-// ── Empty State ────────────────────────────────────────────────────────────────
+// ── Empty State 
 
 class _EmptyState extends StatelessWidget {
   @override

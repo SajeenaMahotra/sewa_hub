@@ -112,7 +112,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // ── AppBar ─────────────────────────────────────────────
+              // ── AppBar
               Container(
                 color: Colors.white,
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
@@ -193,7 +193,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
               const Divider(height: 1, color: Color(0xFFE2E8F0)),
 
-              // ── List ───────────────────────────────────────────────
+              // ── List
               Expanded(
                 child: conversationsAsync.when(
                   loading: () => const Center(
